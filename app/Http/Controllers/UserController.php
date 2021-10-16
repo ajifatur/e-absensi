@@ -89,7 +89,7 @@ class UserController extends Controller
             // Save the user
             $user = new User;
             $user->role = $request->role;
-            $user->group_id = $request->group_id;
+            $user->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
             $user->office_id = $request->office_id;
             $user->position_id = $request->position_id;
             $user->name = $request->name;
