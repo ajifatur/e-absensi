@@ -106,6 +106,37 @@
     </div>
     @endif
 
+    <!-- Modal Alert -->
+    <div class="modal fade" id="modal-alert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OKE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmation -->
+    <div class="modal fade" id="modal-confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="mb-0"></p>
+                    <input type="hidden" name="id">
+                    <input type="hidden" name="type">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-submit">OKE</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form class="d-none" id="form-absensi-masuk" method="post" action="{{ route('member.attendance.entry') }}">
         @csrf
         <input type="hidden" name="id">
@@ -131,28 +162,42 @@
         $(document).on("click", ".card-absensi-masuk", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
-            var ask = confirm("Anda yakin ingin melakukan absen masuk?");
-            if(ask) {
-                $("#form-absensi-masuk input[name=id]").val(id);
-                $("#form-absensi-masuk").submit();
-            }
+            $("#modal-confirmation .modal-body").find("p").text("Anda yakin ingin melakukan absen masuk?");
+            $("#modal-confirmation .modal-body").find("input[name=id]").val(id);
+            $("#modal-confirmation .modal-body").find("input[name=type]").val("masuk");
+            $("#modal-confirmation").modal("show");
         });
 
         // Exit
         $(document).on("click", ".card-absensi-keluar", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
-            var ask = confirm("Anda yakin ingin mengakhiri waktu bekerja Anda sekarang?");
-            if(ask) {
-                $("#form-absensi-keluar input[name=id]").val(id);
-                $("#form-absensi-keluar").submit();
-            }
+            $("#modal-confirmation .modal-body").find("p").text("Anda yakin ingin mengakhiri waktu bekerja Anda sekarang?");
+            $("#modal-confirmation .modal-body").find("input[name=id]").val(id);
+            $("#modal-confirmation .modal-body").find("input[name=type]").val("keluar");
+            $("#modal-confirmation").modal("show");
         });
 
         // Full
         $(document).on("click", ".card-absensi-penuh", function(e) {
             e.preventDefault();
-            alert("Tidak dapat melakukan absensi karena JAM KERJA sudah terisi!");
+            $("#modal-alert .modal-body").find("p").text("Tidak dapat melakukan absensi karena JAM KERJA sudah terisi!");
+            $("#modal-alert").modal("show");
+        });
+
+        // Button Submit
+        $(document).on("click", ".btn-submit", function(e) {
+            e.preventDefault();
+            var id = $("#modal-confirmation .modal-body").find("input[name=id]").val();
+            var type = $("#modal-confirmation .modal-body").find("input[name=type]").val();
+            if(type === "masuk") {
+                $("#form-absensi-masuk input[name=id]").val(id);
+                $("#form-absensi-masuk").submit();
+            }
+            else if(type === "keluar") {
+                $("#form-absensi-keluar input[name=id]").val(id);
+                $("#form-absensi-keluar").submit();
+            }
         });
 
         // Timer
