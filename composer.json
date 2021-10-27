@@ -33,7 +33,8 @@
         },
         "files": [
             "app/Http/Helpers/Date.php",
-            "app/Http/Helpers/Helpers.php"
+            "app/Http/Helpers/Helpers.php",
+            "app/Http/Helpers/Salary.php"
         ]
     },
     "scripts": {

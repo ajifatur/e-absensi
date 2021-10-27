@@ -178,6 +178,16 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Akhir Bekerja</label>
+                            <div class="col-md-9 col-lg-4">
+                                <input type="text" name="end_date" class="form-control datepicker {{ $errors->has('end_date') ? 'is-invalid' : '' }}" value="{{ old('end_date') }}" placeholder="Format: dd/mm/yyyy" autocomplete="off">
+                                <div class="text-muted">Kosongi saja jika masih aktif bekerja.</div>
+                                @if($errors->has('end_date'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('end_date')) }}</div>
+                                @endif
+                            </div>
+                        </div>
                         <hr>
                         <div class="form-group row">
                             <label class="col-md-3 col-lg-2 col-form-label">Email <span class="text-danger">*</span></label>
@@ -220,7 +230,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <!-- <div class="form-group row">
                             <label class="col-md-3 col-lg-2 col-form-label">Status <span class="text-danger">*</span></label>
                             <div class="col-md-9 col-lg-4">
                                 <select name="status" class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}">
@@ -232,7 +242,7 @@
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('status')) }}</div>
                                 @endif
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="tile-footer"><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></div>
                 </form>

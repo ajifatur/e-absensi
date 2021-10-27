@@ -6,6 +6,7 @@ namespace Ajifatur\Helpers;
  * @method static change(string $date)
  * @method static split(string $date)
  * @method static merge(array $date)
+ * @method static object diff(string $from, string $to)
  */
 class Date
 {
@@ -72,5 +73,20 @@ class Date
             return date('d/m/Y H:i', strtotime($date[0])) . self::DATESEPARATOR . date('d/m/Y H:i', strtotime($date[1]));
         }
         else return '';
+    }
+
+    /**
+     * Get the difference between two dates.
+     *
+     * @param  string $from
+     * @param  string $to
+     * @return int
+     */
+    public static function diff($from, $to = null)
+    {
+        $dateFrom = new \DateTime($from);
+        $dateTo = $to == null ? new \DateTime('today') : new \DateTime($to);
+        $diff = $dateTo->diff($dateFrom);
+        return (array)$diff;
     }
 }

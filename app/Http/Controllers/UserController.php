@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Ajifatur\Helpers\Date;
+use Ajifatur\Helpers\Salary;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Group;
@@ -53,16 +54,36 @@ class UserController extends Controller
                 return redirect()->route('admin.user.index', ['role' => 'member']);
         }
 
+        // Set categories
+        $categories = ['Gaji Pokok', 'Insentif Masa Kerja', 'Insentif Sertifikasi'];
+
         // Get offices
         if(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
             $offices = Office::where('group_id','=',Auth::user()->group_id)->get();
         else
             $offices = [];
 
+        // Set the users prop
+        if(count($users) > 0) {
+            foreach($users as $key=>$user) {
+                // Set the period by month
+                $users[$key]->period = abs(Date::diff($user->start_date, date('Y-m').'-24')['days']) / 30;
+
+                // Set salaries
+                $salaries = [];
+                foreach($categories as $category) {
+                    array_push($salaries, Salary::getAmountByRange($users[$key]->period, $user->group_id, $category));
+                }
+
+                $users[$key]->salaries = $salaries;
+            }
+        }
+
         // View
         return view('admin/user/index', [
             'users' => $users,
-            'offices' => $offices
+            'offices' => $offices,
+            'categories' => $categories,
         ]);
     }
 
@@ -109,7 +130,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'username' => 'required|alpha_dash|min:4|unique:users',
             'password' => 'required|min:6',
-            'status' => 'required'
+            // 'status' => 'required'
         ]);
         
         // Check errors
@@ -129,12 +150,14 @@ class UserController extends Controller
             $user->gender = $request->gender;
             $user->address = $request->address;
             $user->start_date = Date::change($request->start_date);
+            $user->end_date = $request->end_date != '' ? Date::change($request->end_date) : null;
             $user->phone_number = $request->phone_number;
             $user->latest_education = $request->latest_education;
             $user->email = $request->email;
             $user->username = $request->username;
             $user->password = bcrypt($request->password);
-            $user->status = $request->status;
+            $user->status = 1;
+            // $user->status = $request->status;
             $user->last_visit = null;
             $user->save();
 
@@ -209,7 +232,7 @@ class UserController extends Controller
             ],
             'password' => $request->password != '' ? 'min:6' : '',
             'role' => 'required',
-            'status' => 'required'
+            // 'status' => 'required'
         ]);
         
         // Check errors
@@ -228,12 +251,13 @@ class UserController extends Controller
             $user->gender = $request->gender;
             $user->address = $request->address;
             $user->start_date = Date::change($request->start_date);
+            $user->end_date = $request->end_date != '' ? Date::change($request->end_date) : null;
             $user->phone_number = $request->phone_number;
             $user->latest_education = $request->latest_education;
             $user->email = $request->email;
             $user->username = $request->username;
             $user->password = $request->password != '' ? bcrypt($request->password) : $user->password;
-            $user->status = $request->status;
+            // $user->status = $request->status;
             $user->save();
 
             // Redirect

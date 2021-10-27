@@ -19,33 +19,43 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-title-w-btn">
-                    <h3 class="title">Kelola User</h3>
-                    <div class="d-flex">
+                    <div>
                         @if((Auth::user()->role == role('admin') || Auth::user()->role == role('manager')) && $_GET['role'] == 'member')
-                        <select name="office" id="office" class="form-control form-control-sm mr-2">
+                        <select name="office" id="office" class="form-control form-control-sm">
                             <option value="">Semua Kantor</option>
                             @foreach($offices as $office)
                             <option value="{{ $office->id }}" {{ isset($_GET['office']) && $_GET['office'] == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
                             @endforeach
                         </select>
                         @endif
+                    </div>
+                    <div>
                         <a class="btn btn-sm btn-primary" href="{{ route('admin.user.create') }}"><i class="fa fa-lg fa-plus"></i> Tambah User</a>
                     </div>
                 </div>
                 <div class="tile-body">
-                    @if(Session::get('message') != null)
+                    @if(Session::get('message'))
                     <div class="alert alert-dismissible alert-success">
                         <button class="close" type="button" data-dismiss="alert">×</button>{{ Session::get('message') }}
                     </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th width="20"><input type="checkbox"></th>
-                                    <th>Identitas</th>
-                                    <th>Kantor, Jabatan</th>
-                                    <th width="40">Opsi</th>
+                                    <th rowspan="2" width="20">#</th>
+                                    <th rowspan="2">Identitas</th>
+                                    <th rowspan="2">Kantor, Jabatan</th>
+                                    <th rowspan="2" width="80">Tanggal Kontrak</th>
+                                    <th rowspan="2" width="80">Masa Kerja (Bulan)</th>
+                                    <th colspan="{{ count($categories) }}">Rincian Gaji (Rp.)</th>
+                                    <th rowspan="2" width="80">Total (Rp.)</th>
+                                    <th rowspan="2" width="40">Opsi</th>
+                                </tr>
+                                <tr>
+                                    @foreach($categories as $category)
+                                    <th width="80">{{ $category }}</th>
+                                    @endforeach
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,6 +82,19 @@
                                             <small class="text-muted">{{ $user->position ? $user->position->name : '' }}</small>
                                         @endif
                                         </td>
+                                        <td>
+                                            <span class="d-none">{{ $user->end_date == null ? 1 : 0 }} {{ $user->start_date }}</span>
+                                            @if($user->end_date == null)
+                                                {{ date('d/m/Y', strtotime($user->start_date)) }}
+                                            @else
+                                                <span class="badge badge-danger">Tidak Aktif</span>
+                                            @endif
+                                        </td>
+                                        <td align="right">{{ number_format($user->period,1,'.',',') }}</td>
+                                        @foreach($user->salaries as $salary)
+                                        <td align="right">{{ number_format($salary,0,',',',') }}</td>
+                                        @endforeach
+                                        <td align="right">{{ number_format(array_sum($user->salaries),0,',',',') }}</td>
                                         <td align="center">
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.user.edit', ['id' => $user->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
