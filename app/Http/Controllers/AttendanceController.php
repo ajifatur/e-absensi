@@ -49,7 +49,7 @@ class AttendanceController extends Controller
                 'groups' => $groups,
             ]);
         }
-        elseif(Auth::user()->role == role('admin')){
+        elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager')){
             // Set params
             $group = Auth::user()->group_id;
             $office = $request->query('office') != null ? $request->query('office') : 0;

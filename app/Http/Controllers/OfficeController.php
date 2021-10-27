@@ -29,7 +29,7 @@ class OfficeController extends Controller
         // Get offices
         if(Auth::user()->role == role('super-admin'))
             $offices = Office::has('group')->get();
-        elseif(Auth::user()->role == role('admin'))
+        elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
             $offices = Office::has('group')->where('group_id','=',Auth::user()->group_id)->get();
 
         // View

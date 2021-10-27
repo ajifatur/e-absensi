@@ -21,7 +21,7 @@ class Admin
         $guards = empty($guards) ? [null] : $guards;
 
         foreach($guards as $guard) {
-            if(Auth::guard($guard)->check() && (Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin'))) {
+            if(Auth::guard($guard)->check() && (Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))) {
                 return $next($request);
             }
         }

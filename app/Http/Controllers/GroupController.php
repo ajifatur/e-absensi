@@ -31,6 +31,8 @@ class GroupController extends Controller
             $groups = Group::all();
         elseif(Auth::user()->role == role('admin'))
             $groups = Group::where('id','=',Auth::user()->group_id)->get();
+        elseif(Auth::user()->role == role('manager'))
+            abort(403);
 
         // View
         return view('admin/group/index', [

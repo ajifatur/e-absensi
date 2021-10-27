@@ -18,7 +18,7 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        if(Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin')) {
+        if(Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin') || Auth::user()->role == role('manager')) {
             // View
             return view('admin/dashboard/index');
         }

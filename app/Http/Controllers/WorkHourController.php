@@ -22,7 +22,7 @@ class WorkHourController extends Controller
         // Get work hours
         if(Auth::user()->role == role('super-admin'))
             $work_hours = WorkHour::all();
-        elseif(Auth::user()->role == role('admin'))
+        elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
             $work_hours = WorkHour::where('group_id','=',Auth::user()->group_id)->get();
 
         // View

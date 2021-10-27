@@ -34,7 +34,7 @@ class LoginController extends Controller
         if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            if($request->user()->role == role('super-admin') || $request->user()->role == role('admin'))
+            if($request->user()->role == role('super-admin') || $request->user()->role == role('admin') || $request->user()->role == role('manager'))
                 return redirect()->route('admin.dashboard');
             elseif($request->user()->role == role('member'))
                 return redirect()->route('member.dashboard');

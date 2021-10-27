@@ -1,15 +1,11 @@
 <!-- Navbar-->
 <header class="app-header"><a class="app-header__logo" href="{{ route('admin.dashboard') }}">{{ setting('name') }}</a>
-	<!-- Sidebar toggle button-->
+	<!-- Sidebar Toggle Button -->
 	<a class="app-sidebar__toggle" href="#" data-toggle="sidebar"></a>
-	<!-- Navbar Right Menu-->
+	<!-- Navbar Right Menu -->
 	<ul class="app-nav ml-auto ml-md">
-		@if(Auth::user()->role == role('super-admin'))
-		<li class="bg-warning d-none d-sm-block"><a class="app-nav__item">Hai <strong>{{ Auth::user()->name }}</strong>, Anda masuk sebagai <strong>SUPER ADMIN</strong></a></li>
-		@elseif(Auth::user()->role == role('admin'))
-		<li class="bg-warning d-none d-sm-block"><a class="app-nav__item">Hai <strong>{{ Auth::user()->name }}</strong>, Anda masuk sebagai <strong>ADMIN</strong></a></li>
-		@endif
-		<!-- User Menu-->
+		<li class="bg-warning d-none d-sm-block"><a class="app-nav__item">Hai <strong>{{ Auth::user()->name }}</strong>, Anda masuk sebagai <strong>{{ strtoupper(role(Auth::user()->role)) }}</strong></a></li>
+		<!-- User Menu -->
 		<li class="dropdown"><a class="app-nav__item" href="#" data-toggle="dropdown"><i class="fa fa-user fa-lg"></i></a>
 			<ul class="dropdown-menu settings-menu dropdown-menu-right">
 				<li><a class="dropdown-item" href="/admin/profil"><i class="fa fa-cog fa-lg"></i> Profil</a></li>

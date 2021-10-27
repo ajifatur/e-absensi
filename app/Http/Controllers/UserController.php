@@ -11,6 +11,7 @@ use Ajifatur\Helpers\Date;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Group;
+use App\Models\Office;
 
 class UserController extends Controller
 {
@@ -23,14 +24,45 @@ class UserController extends Controller
     public function index(Request $request)
     {
         // Get users
-        if(Auth::user()->role == role('super-admin'))
-            $users = User::orderBy('role','asc')->get();
-        elseif(Auth::user()->role == role('admin'))
-            $users = User::where('group_id','=',Auth::user()->group_id)->orderBy('role','asc')->get();
+        if(Auth::user()->role == role('super-admin')) {
+            if($request->query('role') == 'admin')
+                $users = User::where('role','=',role('admin'))->get();
+            elseif($request->query('role') == 'manager')
+                $users = User::where('role','=',role('manager'))->get();
+            elseif($request->query('role') == 'member')
+                $users = User::where('role','=',role('member'))->get();
+            else
+                return redirect()->route('admin.user.index', ['role' => 'member']);
+        }
+        elseif(Auth::user()->role == role('admin')) {
+            if($request->query('role') == 'admin')
+                $users = User::where('role','=',role('admin'))->where('group_id','=',Auth::user()->group_id)->get();
+            elseif($request->query('role') == 'manager')
+                $users = User::where('role','=',role('manager'))->where('group_id','=',Auth::user()->group_id)->get();
+            elseif($request->query('role') == 'member')
+                $users = $request->query('office') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->get();
+            else
+                return redirect()->route('admin.user.index', ['role' => 'member']);
+        }
+        elseif(Auth::user()->role == role('manager')) {
+            if($request->query('role') == 'admin' || $request->query('role') == 'manager')
+                abort(403);
+            elseif($request->query('role') == 'member')
+                $users = $request->query('office') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->get();
+            else
+                return redirect()->route('admin.user.index', ['role' => 'member']);
+        }
+
+        // Get offices
+        if(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
+            $offices = Office::where('group_id','=',Auth::user()->group_id)->get();
+        else
+            $offices = [];
 
         // View
         return view('admin/user/index', [
-            'users' => $users
+            'users' => $users,
+            'offices' => $offices
         ]);
     }
 
@@ -42,7 +74,7 @@ class UserController extends Controller
     public function create()
     {
         // Get roles
-        $roles = Role::where('code','!=','super-admin')->get();
+        $roles = Role::where('code','!=','super-admin')->orderBy('num_order','asc')->get();
 
         // Get groups
         $groups = Group::all();
@@ -66,8 +98,8 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'role' => 'required',
             'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
-            'office_id' => $request->role != '' && $request->role != role('admin') ? 'required' : '',
-            'position_id' => $request->role != '' && $request->role != role('admin') ? 'required' : '',
+            'office_id' => !in_array($request->role, [role('admin'), role('manager')]) ? 'required' : '',
+            'position_id' => !in_array($request->role, [role('admin'), role('manager')]) ? 'required' : '',
             'name' => 'required|max:200',
             'birthdate' => 'required',
             'gender' => 'required',
@@ -90,8 +122,8 @@ class UserController extends Controller
             $user = new User;
             $user->role = $request->role;
             $user->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
-            $user->office_id = $request->office_id;
-            $user->position_id = $request->position_id;
+            $user->office_id = !in_array($request->role, [role('admin'), role('manager')]) ? $request->office_id : 0;
+            $user->position_id = !in_array($request->role, [role('admin'), role('manager')]) ? $request->position_id : 0;
             $user->name = $request->name;
             $user->birthdate = Date::change($request->birthdate);
             $user->gender = $request->gender;
@@ -140,7 +172,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         // Get roles
-        $roles = Role::where('code','!=','super-admin')->get();
+        $roles = Role::where('code','!=','super-admin')->orderBy('num_order','asc')->get();
 
         // Get groups
         $groups = Group::all();

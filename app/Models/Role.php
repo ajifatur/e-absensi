@@ -24,6 +24,6 @@ class Role extends Model
      *
      * @throws \Illuminate\Database\Eloquent\MassAssignmentException
      */
-    protected $fillable = ['name', 'code'];
+    protected $fillable = ['name', 'code', 'num_order'];
 
 }

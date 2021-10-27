@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-clipboard"></i> Report Absensi</h1>
-            <p>Menu untuk menampilkan report absensi</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -37,7 +36,7 @@
                                     <option value="{{ $office->id }}" {{ isset($_GET) && isset($_GET['office']) && $_GET['office'] == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
                                     @endforeach
                                 @endif
-                            @elseif(Auth::user()->role == role('admin'))
+                            @elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
                                 @foreach(\App\Models\Group::find(Auth::user()->group_id)->offices as $office)
                                 <option value="{{ $office->id }}" {{ isset($_GET) && isset($_GET['office']) && $_GET['office'] == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
                                 @endforeach
@@ -87,7 +86,7 @@
                                         <br>
                                         <small class="text-muted">{{ $attendance->user->office->name }}</small>
                                     </td>
-                                    <td>{{ $attendance->workhour->name }}<br><small class="text-muted">{{ date('H:i', strtotime($attendance->start_at)) }} - {{ date('H:i', strtotime($attendance->end_at)) }}</small></td>
+                                    <td>{{ $attendance->workhour ? $attendance->workhour->name : '-' }}<br><small class="text-muted">{{ date('H:i', strtotime($attendance->start_at)) }} - {{ date('H:i', strtotime($attendance->end_at)) }}</small></td>
                                     <td>
                                         <span class="d-none">{{ date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at }}</span>
                                         {{ date('d/m/Y', strtotime($attendance->entry_at)) }}

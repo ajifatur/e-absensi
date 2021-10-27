@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-user"></i> Edit User</h1>
-            <p>Menu untuk mengedit data user</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -23,16 +22,11 @@
                 <form method="post" action="{{ route('admin.user.update') }}">
                     @csrf
                     <input type="hidden" name="id" value="{{ $user->id }}">
-                    <div class="tile-title-w-btn">
-                        <h3 class="title">Edit User</h3>
-                        <p><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></p>
-                    </div>
                     <div class="tile-body">
-                        <div class="row">
-
-                            <div class="form-group col-md-6">
-                                <label>Role <span class="text-danger">*</span></label>
-                                <select name="role" class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}">
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Role <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <select name="role" class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}" id="role">
                                     <option value="" disabled selected>--Pilih--</option>
                                     @foreach($roles as $role)
                                     <option value="{{ $role->id }}" {{ $user->role == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
@@ -42,13 +36,11 @@
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('role')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="separator"></div>
-
-                            <div class="form-group col-md-6">
-                                <label>Grup <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Grup <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
                                 <select name="group_id" class="form-control {{ $errors->has('group_id') ? 'is-invalid' : '' }}" id="group" disabled>
-                                    <option value="" disabled selected>--Pilih--</option>
                                     @if(Auth::user()->role == role('super-admin'))
                                         @foreach($groups as $group)
                                         <option value="{{ $group->id }}" {{ $user->group_id == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
@@ -63,10 +55,21 @@
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('group_id')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Kantor <span class="text-danger">*</span></label>
-                                <select name="office_id" class="form-control {{ $errors->has('office_id') ? 'is-invalid' : '' }}" id="kantor">
+                        </div>
+                        @php
+                            $disabled_selected = '';
+                            if(Auth::user()->role == role('super-admin')) {
+                                if(old('group_id') == null) $disabled_selected = 'disabled';
+                                elseif(in_array(old('role'), [role('admin'), role('manager')])) $disabled_selected = 'disabled';
+                            }
+                            else {
+                                if(in_array(old('role'), [role('admin'), role('manager')])) $disabled_selected = 'disabled';
+                            }
+                        @endphp
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Kantor <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <select name="office_id" class="form-control {{ $errors->has('office_id') ? 'is-invalid' : '' }}" id="kantor" {{ $disabled_selected }}>
                                     <option value="" selected>--Pilih--</option>
                                     @foreach($user->group->offices as $office)
                                     <option value="{{ $office->id }}" {{ $user->office_id == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
@@ -75,12 +78,12 @@
                                 @if($errors->has('office_id'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('office_id')) }}</div>
                                 @endif
-                                <div class="form-control-feedback text-muted">Kosongi saja jika role-nya Admin.</div>
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Jabatan <span class="text-danger">*</span></label>
-                                <select name="position_id" class="form-control {{ $errors->has('position_id') ? 'is-invalid' : '' }}" id="jabatan">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Jabatan <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <select name="position_id" class="form-control {{ $errors->has('position_id') ? 'is-invalid' : '' }}" id="jabatan" {{ $disabled_selected }}>
                                     <option value="" selected>--Pilih--</option>
                                     @foreach($user->group->positions as $position)
                                     <option value="{{ $position->id }}" {{ $user->position_id == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
@@ -89,101 +92,103 @@
                                 @if($errors->has('position_id'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('position_id')) }}</div>
                                 @endif
-                                <div class="form-control-feedback text-muted">Kosongi saja jika role-nya Admin.</div>
                             </div>
-
-                            <div class="separator"></div>
-
-                            <div class="form-group col-md-12">
-                                <label>Nama <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ $user->name }}" placeholder="Masukkan Nama">
+                        </div>
+                        <hr>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Nama <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-10">
+                                <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ $user->name }}">
                                 @if($errors->has('name'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('name')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Tanggal Lahir <span class="text-danger">*</span></label>
-                                <input type="text" name="birthdate" class="form-control datepicker {{ $errors->has('birthdate') ? 'is-invalid' : '' }}" value="{{ date('d/m/Y', strtotime($user->birthdate)) }}" placeholder="Masukkan Tanggal Lahir (Format: dd/mm/yyyy)" autocomplete="off">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <input type="text" name="birthdate" class="form-control datepicker {{ $errors->has('birthdate') ? 'is-invalid' : '' }}" value="{{ date('d/m/Y', strtotime($user->birthdate)) }}" placeholder="Format: dd/mm/yyyy" autocomplete="off">
                                 @if($errors->has('birthdate'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('birthdate')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Jenis Kelamin <span class="text-danger">*</span></label>
-                                <br>
-                                <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="gender" id="gender-1" value="L" {{ $user->gender == 'L' ? 'checked' : '' }}>
-                                <label class="form-check-label" for="gender-1">
-                                    Laki-Laki
-                                </label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="gender-L" name="gender" class="custom-control-input" value="L" {{ $user->gender == 'L' ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="gender-L">Laki-Laki</label>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="gender" id="gender-2" value="P" {{ $user->gender == 'P' ? 'checked' : '' }}>
-                                <label class="form-check-label" for="gender-2">
-                                    Perempuan
-                                </label>
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="gender-P" name="gender" class="custom-control-input" value="P" {{ $user->gender == 'P' ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="gender-P">Perempuan</label>
                                 </div>
                                 @if($errors->has('gender'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('gender')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Alamat <span class="text-danger">*</span></label>
-                                <textarea name="address" class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}" placeholder="Masukkan Alamat" rows="2">{{ $user->address }}</textarea>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Alamat <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-10">
+                                <textarea name="address" class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}" rows="3">{{ $user->address }}</textarea>
                                 @if($errors->has('address'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('address')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Pendidikan Terakhir</label>
-                                <textarea name="latest_education" class="form-control {{ $errors->has('latest_education') ? 'is-invalid' : '' }}" placeholder="Masukkan Pendidikan Terakhir" rows="2">{{ $user->latest_education }}</textarea>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Pendidikan Terakhir</label>
+                            <div class="col-md-9 col-lg-10">
+                                <textarea name="latest_education" class="form-control {{ $errors->has('latest_education') ? 'is-invalid' : '' }}" rows="3">{{ $user->latest_education }}</textarea>
                                 @if($errors->has('latest_education'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('latest_education')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Mulai Bekerja <span class="text-danger">*</span></label>
-                                <input type="text" name="start_date" class="form-control datepicker {{ $errors->has('start_date') ? 'is-invalid' : '' }}" value="{{ date('d/m/Y', strtotime($user->start_date)) }}" placeholder="Masukkan Tanggal Mulai Bekerja (Format: dd/mm/yyyy)" autocomplete="off">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Mulai Bekerja <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <input type="text" name="start_date" class="form-control datepicker {{ $errors->has('start_date') ? 'is-invalid' : '' }}" value="{{ date('d/m/Y', strtotime($user->start_date)) }}" placeholder="Format: dd/mm/yyyy" autocomplete="off">
                                 @if($errors->has('start_date'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('start_date')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="separator"></div>
-
-                            <div class="form-group col-md-6">
-                                <label>Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ $user->email }}" placeholder="Masukkan Email">
+                        </div>
+                        <hr>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Email <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-10">
+                                <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" value="{{ $user->email }}">
                                 @if($errors->has('email'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('email')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Nomor HP <span class="text-danger">*</span></label>
-                                <input type="text" name="phone_number" class="form-control number-only {{ $errors->has('phone_number') ? 'is-invalid' : '' }}" value="{{ $user->phone_number }}" placeholder="Masukkan Nomor HP">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Nomor HP <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-10">
+                                <input type="text" name="phone_number" class="form-control number-only {{ $errors->has('phone_number') ? 'is-invalid' : '' }}" value="{{ $user->phone_number }}">
                                 @if($errors->has('phone_number'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('phone_number')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Username <span class="text-danger">*</span></label>
-                                <input type="text" name="username" class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" value="{{ $user->username }}" placeholder="Masukkan Username">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Username <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <input type="text" name="username" class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" value="{{ $user->username }}">
                                 @if($errors->has('username'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('username')) }}</div>
                                 @endif
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Password <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Password <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
                                 <div class="input-group">
-                                    <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" placeholder="Masukkan Password">
+                                    <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}">
                                     <div class="input-group-append">
                                     <a href="#" class="btn btn-toggle-password input-group-text {{ $errors->has('password') ? 'border-danger' : '' }}"><i class="fa fa-eye"></i></a>
                                     </div>
@@ -191,10 +196,12 @@
                                 @if($errors->has('password'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('password')) }}</div>
                                 @endif
+                                <div class="text-muted">Kosongi saja jika tidak ingin mengganti password.</div>
                             </div>
-
-                            <div class="form-group col-md-6">
-                                <label>Status <span class="text-danger">*</span></label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Status <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
                                 <select name="status" class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}">
                                     <option value="" disabled selected>--Pilih--</option>
                                     <option value="1" {{ $user->status == '1' ? 'selected' : '' }}>Aktif</option>
@@ -204,7 +211,6 @@
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('status')) }}</div>
                                 @endif
                             </div>
-
                         </div>
                     </div>
                     <div class="tile-footer"><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></div>
@@ -240,6 +246,20 @@
         }
     });
 
+    // Change Role
+    $(document).on("change", "#role", function() {
+        var role = $(this).val();
+        var admins = ["{{ role('super-admin') }}", "{{ role('admin') }}", "{{ role('manager') }}"];
+        if(admins.indexOf(role) >= 0) {
+            $("#kantor").attr("disabled","disabled");
+            $("#jabatan").attr("disabled","disabled");
+        }
+        else {
+            $("#kantor").removeAttr("disabled");
+            $("#jabatan").removeAttr("disabled");
+        }
+    });
+
     // Change Group
     $(document).on("change", "#group", function() {
         var group = $(this).val();
@@ -252,7 +272,7 @@
                 $(result).each(function(key,value){
                     html += '<option value="' + value.id + '">' + value.name + '</option>';
                 });
-                $("#kantor").html(html).removeAttr("disabled");
+                $("#kantor").html(html);
             }
         });
         $.ajax({
@@ -264,27 +284,32 @@
                 $(result).each(function(key,value){
                     html += '<option value="' + value.id + '">' + value.name + '</option>';
                 });
-                $("#jabatan").html(html).removeAttr("disabled");
+                $("#jabatan").html(html);
             }
         });
+        var role = $("#role").val();
+        var admins = ["{{ role('super-admin') }}", "{{ role('admin') }}", "{{ role('manager') }}"];
+        if(admins.indexOf(role) >= 0) {
+            $("#kantor").attr("disabled","disabled");
+            $("#jabatan").attr("disabled","disabled");
+        }
+        else {
+            $("#kantor").removeAttr("disabled");
+            $("#jabatan").removeAttr("disabled");
+        }
     });
 
-    // Change Kantor
+    // Change Office
     $(document).on("change", "#kantor", function(){
       var value = $(this).val();
       value == 0 ? $("#jabatan").attr("disabled","disabled") : $("#jabatan").removeAttr("disabled");;
     });
 
-    // Input Hanya Nomor
+    // Input Number Only
     $(document).on("keypress", ".number-only", function(e){
         var charCode = (e.which) ? e.which : e.keyCode;
-        if (charCode >= 48 && charCode <= 57) { 
-            // 0-9 only
-            return true;
-        }
-        else{
-            return false;
-        }
+        if(charCode >= 48 && charCode <= 57) return true;
+        else return false;
     });
 </script>
 

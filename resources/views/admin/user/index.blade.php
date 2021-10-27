@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-user"></i> Kelola User</h1>
-        <p>Menu untuk mengelola data user</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -21,7 +20,15 @@
             <div class="tile">
                 <div class="tile-title-w-btn">
                     <h3 class="title">Kelola User</h3>
-                    <div class="btn-group">
+                    <div class="d-flex">
+                        @if((Auth::user()->role == role('admin') || Auth::user()->role == role('manager')) && $_GET['role'] == 'member')
+                        <select name="office" id="office" class="form-control form-control-sm mr-2">
+                            <option value="">Semua Kantor</option>
+                            @foreach($offices as $office)
+                            <option value="{{ $office->id }}" {{ isset($_GET['office']) && $_GET['office'] == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
+                            @endforeach
+                        </select>
+                        @endif
                         <a class="btn btn-sm btn-primary" href="{{ route('admin.user.create') }}"><i class="fa fa-lg fa-plus"></i> Tambah User</a>
                     </div>
                 </div>
@@ -46,7 +53,7 @@
                                     <tr>
                                         <td align="center"><input type="checkbox"></td>
                                         <td>
-                                            <a href="/admin/user/detail/{{ $user->id }}">{{ $user->name }}</a>
+                                            <a href="{{ route('admin.user.detail', ['id' => $user->id]) }}">{{ $user->name }}</a>
                                             <br>
                                             <small class="text-dark">{{ $user->email }}</small>
                                             <br>
@@ -56,10 +63,10 @@
                                         @if(Auth::user()->role == role('super-admin') && $user->role == role('super-admin'))
                                             SUPER ADMIN
                                         @else
-                                            {{ $user->role == role('admin') && $user->office_id == 0 ? 'ADMIN' : $user->office->name }}
+                                            {{ in_array($user->role, [role('admin'), role('manager')]) ? strtoupper(role($user->role)) : $user->office->name }}
                                             <br>
                                             @if(Auth::user()->role == role('super-admin'))
-                                            <small><a href="#">{{ $user->group->name }}</a></small>
+                                            <small><a href="{{ route('admin.group.detail', ['id' => $user->group->id]) }}">{{ $user->group->name }}</a></small>
                                             <br>
                                             @endif
                                             <small class="text-muted">{{ $user->position ? $user->position->name : '' }}</small>
@@ -70,7 +77,7 @@
                                                 <a href="{{ route('admin.user.edit', ['id' => $user->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                                                 @if(Auth::user()->role == role('super-admin'))
                                                 <a href="#" class="btn btn-danger btn-sm {{ $user->id > 1 ? 'btn-delete' : '' }}" data-id="{{ $user->id }}" style="{{ $user->id > 1 ? '' : 'cursor: not-allowed' }}" title="{{ $user->id <= 1 ? $user->id == Auth::user()->id ? 'Tidak dapat menghapus akun sendiri' : 'Akun ini tidak boleh dihapus' : 'Hapus' }}"><i class="fa fa-trash"></i></a>
-                                                @elseif(Auth::user()->role == role('admin'))
+                                                @elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
                                                 <a href="#" class="btn btn-danger btn-sm {{ $user->id != Auth::user()->id ? 'btn-delete' : '' }}" data-id="{{ $user->id }}" style="{{ $user->id != Auth::user()->id ? '' : 'cursor: not-allowed' }}" title="{{ $user->id == Auth::user()->id ? 'Tidak dapat menghapus akun sendiri' : 'Hapus' }}"><i class="fa fa-trash"></i></a>
                                                 @endif
                                             </div>
@@ -111,6 +118,15 @@
 			$("#form-delete").submit();
 		}
 	});
+
+    // Change office
+    $(document).on("change", "#office", function() {
+        var office = $(this).val();
+        if(office == '')
+            window.location.href = "{{ route('admin.user.index', ['role' => $_GET['role']]) }}";
+        else
+            window.location.href = "{{ route('admin.user.index', ['role' => $_GET['role']]) }}" + "&office=" + office;
+    });
 </script>
 
 @endsection
