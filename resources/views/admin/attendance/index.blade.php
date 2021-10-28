@@ -21,14 +21,14 @@
                 <div class="tile-body">
                     <form id="form-tanggal" class="form-inline" method="get" action="">
                         @if(Auth::user()->role == role('super-admin'))
-                        <select name="group" id="grup" class="form-control mb-2 mr-sm-2">
+                        <select name="group" id="grup" class="form-control form-control-sm mb-2 mr-sm-2">
                             <option value="0">Semua Grup</option>
                             @foreach($groups as $group)
                             <option value="{{ $group->id }}" {{ isset($_GET) && isset($_GET['group']) && $_GET['group'] == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
                             @endforeach
                         </select>
                         @endif
-                        <select name="office" id="kantor" class="form-control mb-2 mr-sm-2">
+                        <select name="office" id="kantor" class="form-control form-control-sm mb-2 mr-sm-2">
                             <option value="0">Semua Kantor</option>
                             @if(Auth::user()->role == role('super-admin'))
                                 @if(isset($_GET) && isset($_GET['group']) && $_GET['group'] != 0)
@@ -42,9 +42,9 @@
                                 @endforeach
                             @endif
                         </select>
-                        <input type="text" id="t1" name="t1" class="form-control mb-2 mr-sm-2 input-tanggal" value="{{ isset($_GET) && isset($_GET['t1']) ? $_GET['t1'] : date('d/m/Y') }}" placeholder="Dari Tanggal" title="Dari Tanggal">
-                        <input type="text" id="t2" name="t2" class="form-control mb-2 mr-sm-2 input-tanggal" value="{{ isset($_GET) && isset($_GET['t2']) ? $_GET['t2'] : date('d/m/Y') }}" placeholder="Sampai Tanggal" title="Sampai Tanggal">
-                        <button type="submit" class="btn btn-primary btn-submit mb-2">Submit</button>
+                        <input type="text" id="t1" name="t1" class="form-control form-control-sm mb-2 mr-sm-2 input-tanggal" value="{{ isset($_GET) && isset($_GET['t1']) ? $_GET['t1'] : date('d/m/Y') }}" placeholder="Dari Tanggal" title="Dari Tanggal">
+                        <input type="text" id="t2" name="t2" class="form-control form-control-sm mb-2 mr-sm-2 input-tanggal" value="{{ isset($_GET) && isset($_GET['t2']) ? $_GET['t2'] : date('d/m/Y') }}" placeholder="Sampai Tanggal" title="Sampai Tanggal">
+                        <button type="submit" class="btn btn-sm btn-primary btn-submit mb-2">Submit</button>
                     </form>
                 </div>
             </div>

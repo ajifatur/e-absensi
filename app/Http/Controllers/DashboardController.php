@@ -37,18 +37,28 @@ class DashboardController extends Controller
                         $entry_at = date('Y-m-d H:i:s');
                         
                         // Set start date and end date
-                        if(date('G', strtotime($entry_at)) == 23 && date('G', strtotime($work_hour->start_at)) == 0){
-                            $start_date = date('Y-m-d', strtotime("+1 day"));
-                            $end_date = date('Y-m-d', strtotime("+1 day"));
-                        }
-                        elseif(date('G', strtotime($entry_at)) == 23 && date('G', strtotime($work_hour->end_at)) == 0){
-                            $start_date = date('Y-m-d', strtotime($entry_at));
-                            $end_date = date('Y-m-d', strtotime("+1 day"));
-                        }
-                        else{
+                        // if(date('G', strtotime($entry_at)) == 23 && date('G', strtotime($work_hour->start_at)) == 0){
+                        //     $start_date = date('Y-m-d', strtotime("+1 day"));
+                        //     $end_date = date('Y-m-d', strtotime("+1 day"));
+                        // }
+                        // elseif(date('G', strtotime($entry_at)) == 23 && date('G', strtotime($work_hour->end_at)) == 0){
+                        //     $start_date = date('Y-m-d', strtotime($entry_at));
+                        //     $end_date = date('Y-m-d', strtotime("+1 day"));
+                        // }
+                        // else{
+                        //     $start_date = date('Y-m-d', strtotime($entry_at));
+                        //     $end_date = date('Y-m-d', strtotime($entry_at));
+                        // }
+
+                        if(strtotime($work_hour->start_at) <= strtotime($work_hour->end_at)) {
                             $start_date = date('Y-m-d', strtotime($entry_at));
                             $end_date = date('Y-m-d', strtotime($entry_at));
                         }
+                        else {
+                            $start_date = date('Y-m-d', strtotime($entry_at));
+                            $end_date = date('Y-m-d', strtotime("+1 day"));
+                        }
+
                         $start_time = new \DateTime($start_date.' '.$work_hour->start_at);
                         $end_time = new \DateTime($end_date.' '.$work_hour->end_at);
 
