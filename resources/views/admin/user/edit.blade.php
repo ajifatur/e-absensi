@@ -59,10 +59,10 @@
                         @php
                             $disabled_selected = '';
                             if(Auth::user()->role == role('super-admin')) {
-                                if(in_array(old('role'), [role('admin'), role('manager')])) $disabled_selected = 'disabled';
+                                if(in_array($user->role, [role('admin'), role('manager')])) $disabled_selected = 'disabled';
                             }
                             else {
-                                if(in_array(old('role'), [role('admin'), role('manager')])) $disabled_selected = 'disabled';
+                                if(in_array($user->role, [role('admin'), role('manager')])) $disabled_selected = 'disabled';
                             }
                         @endphp
                         <div class="form-group row">
