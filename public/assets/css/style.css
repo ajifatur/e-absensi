@@ -38,4 +38,6 @@ a:hover {color: #3f598c;}
 @media(min-width: 768px){
     .app-header__logo {background-color: #5173b380!important; text-transform: uppercase;}
 }
+.dataTable {width: 100%!important;}
 .dataTable > thead > tr > th {text-align: center; vertical-align: middle;}
+.datepicker.dropdown-menu {z-index: 2000;}

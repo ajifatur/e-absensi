@@ -30,6 +30,17 @@
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('name')) }}</div>
                                 @endif
                             </div>
+                            <div class="form-group col-md-12">
+                                <label>Tipe <span class="text-danger">*</span></label>
+                                <select name="type_id" class="form-control {{ $errors->has('type_id') ? 'is-invalid' : '' }}" id="category">
+                                    <option value="" selected>--Pilih--</option>
+                                    <option value="1" {{ old('type_id') == 1 ? 'selected' : '' }}>Manual</option>
+                                    <option value="2" {{ old('type_id') == 2 ? 'selected' : '' }}>Masa Kerja (Bulan)</option>
+                                </select>
+                                @if($errors->has('type_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('type_id')) }}</div>
+                                @endif
+                            </div>
                             @if(Auth::user()->role == role('super-admin'))
                             <div class="form-group col-md-12">
                                 <label>Grup <span class="text-danger">*</span></label>

@@ -57,7 +57,7 @@
                                 @if(Request::query('role') == 'member')
                                     <tr>
                                         @foreach($categories as $category)
-                                        <th width="80">{{ $category }}</th>
+                                        <th width="80">{{ $category->name }}</th>
                                         @endforeach
                                     </tr>
                                 @endif
@@ -95,7 +95,7 @@
                                                     <span class="badge badge-danger">Tidak Aktif</span>
                                                 @endif
                                             </td>
-                                            <td align="right">{{ number_format($user->period,1,'.',',') }}</td>
+                                            <td align="right">{{ $user->end_date == null ? number_format($user->period,1,'.',',') : '' }}</td>
                                             @foreach($user->salaries as $salary)
                                             <td align="right">{{ number_format($salary,0,',',',') }}</td>
                                             @endforeach
@@ -103,6 +103,7 @@
                                         @endif
                                         <td align="center">
                                             <div class="btn-group">
+                                                <a href="{{ route('admin.user.edit-indicator', ['id' => $user->id]) }}" class="btn btn-info btn-sm" title="Edit Indikator"><i class="fa fa-cog"></i></a>
                                                 <a href="{{ route('admin.user.edit', ['id' => $user->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                                                 @if(Auth::user()->role == role('super-admin'))
                                                 <a href="#" class="btn btn-danger btn-sm {{ $user->id > 1 ? 'btn-delete' : '' }}" data-id="{{ $user->id }}" style="{{ $user->id > 1 ? '' : 'cursor: not-allowed' }}" title="{{ $user->id <= 1 ? $user->id == Auth::user()->id ? 'Tidak dapat menghapus akun sendiri' : 'Akun ini tidak boleh dihapus' : 'Hapus' }}"><i class="fa fa-trash"></i></a>

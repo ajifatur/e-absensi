@@ -13,6 +13,8 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Group;
 use App\Models\Office;
+use App\Models\SalaryCategory;
+use App\Models\UserIndicator;
 
 class UserController extends Controller
 {
@@ -24,6 +26,14 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        if($request->ajax()) {
+            // Get users by the group
+            $users = User::where('group_id','=',$request->query('group'))->where('role','=',role('member'))->where('end_date','=',null)->orderBy('name','asc')->get();
+
+            // Return
+            return response()->json($users);
+        }
+
         // Get users
         if(Auth::user()->role == role('super-admin')) {
             if($request->query('role') == 'admin')
@@ -54,9 +64,6 @@ class UserController extends Controller
                 return redirect()->route('admin.user.index', ['role' => 'member']);
         }
 
-        // Set categories
-        $categories = ['Gaji Pokok', 'Insentif Masa Kerja', 'Insentif Sertifikasi'];
-
         // Get offices
         if(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
             $offices = Office::where('group_id','=',Auth::user()->group_id)->get();
@@ -66,13 +73,22 @@ class UserController extends Controller
         // Set the users prop
         if(count($users) > 0 && $request->query('role') == 'member') {
             foreach($users as $key=>$user) {
+                // Set categories
+                $categories = SalaryCategory::where('group_id','=',$user->group_id)->get();
+
                 // Set the period by month
                 $users[$key]->period = abs(Date::diff($user->start_date, date('Y-m').'-24')['days']) / 30;
 
                 // Set salaries
                 $salaries = [];
                 foreach($categories as $category) {
-                    array_push($salaries, Salary::getAmountByRange($users[$key]->period, $user->group_id, $category));
+                    if($category->type_id == 1) {
+                        $check = $user->indicators()->where('category_id','=',$category->id)->first();
+                        $value = $check ? $check->value : 0;
+                        array_push($salaries, Salary::getAmountByRange($value, $user->group_id, $category->name));
+                    }
+                    if($category->type_id == 2)
+                        array_push($salaries, Salary::getAmountByRange($users[$key]->period, $user->group_id, $category->name));
                 }
 
                 $users[$key]->salaries = $salaries;
@@ -141,7 +157,7 @@ class UserController extends Controller
         else{
             // Save the user
             $user = new User;
-            $user->role = $request->role;
+            $user->role = Auth::user()->role == role('manager') ? role('member') : $request->role;
             $user->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
             $user->office_id = !in_array($request->role, [role('admin'), role('manager')]) ? $request->office_id : 0;
             $user->position_id = !in_array($request->role, [role('admin'), role('manager')]) ? $request->position_id : 0;
@@ -161,8 +177,11 @@ class UserController extends Controller
             $user->last_visit = null;
             $user->save();
 
+            // Get the role
+            $role = Role::find($user->role);
+
             // Redirect
-            return redirect()->route('admin.user.index')->with(['message' => 'Berhasil menambah data.']);
+            return redirect()->route('admin.user.index', ['role' => $role->code])->with(['message' => 'Berhasil menambah data.']);
         }
     }
 
@@ -243,7 +262,7 @@ class UserController extends Controller
         else{
             // Update the user
             $user = User::find($request->id);
-            $user->role = $request->role;
+            $user->role = Auth::user()->role == role('manager') ? role('member') : $request->role;
             $user->office_id = $request->office_id;
             $user->position_id = $request->position_id;
             $user->name = $request->name;
@@ -260,8 +279,74 @@ class UserController extends Controller
             // $user->status = $request->status;
             $user->save();
 
+            // Get the role
+            $role = Role::find($user->role);
+
             // Redirect
-            return redirect()->route('admin.user.index')->with(['message' => 'Berhasil mengupdate data.']);
+            return redirect()->route('admin.user.index', ['role' => $role->code])->with(['message' => 'Berhasil mengupdate data.']);
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function editIndicator($id)
+    {
+        // Get the user
+        $user = User::findOrFail($id);
+
+        // Get categories
+        $categories = SalaryCategory::where('group_id','=',$user->group_id)->where('type_id','=',1)->get();
+
+        // View
+        return view('admin/user/edit-indicator', [
+            'user' => $user,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateIndicator(Request $request)
+    {
+        // Validation
+        $validator = Validator::make($request->all(), [
+            'value.*' => 'required',
+        ]);
+        
+        // Check errors
+        if($validator->fails()){
+            // Back to form page with validation error messages
+            return redirect()->back()->withErrors($validator->errors())->withInput();
+        }
+        else{
+            // Get
+            $user = User::find($request->id);
+            $role = Role::find($user->role);
+            $values = $request->value;
+
+            // Update or add the indicator
+            if(count($values) > 0) {
+                foreach($values as $key=>$value) {
+                    $user_indicator = UserIndicator::where('user_id','=',$user->id)->where('category_id','=',$key)->first();
+                    if(!$user_indicator) $user_indicator = new UserIndicator;
+
+                    $user_indicator->user_id = $request->id;
+                    $user_indicator->category_id = $key;
+                    $user_indicator->value = $value;
+                    $user_indicator->save();
+                }
+            }
+
+            // Redirect
+            return redirect()->route('admin.user.index', ['role' => $role->code])->with(['message' => 'Berhasil mengupdate data.']);
         }
     }
 

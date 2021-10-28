@@ -65,6 +65,7 @@ class SalaryCategoryController extends Controller
         // Validation
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
+            'type_id' => 'required',
             'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
         ]);
         
@@ -78,6 +79,7 @@ class SalaryCategoryController extends Controller
             $salary_category = new SalaryCategory;
             $salary_category->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
             $salary_category->name = $request->name;
+            $salary_category->type_id = $request->type_id;
             $salary_category->save();
 
             // Redirect
@@ -117,6 +119,7 @@ class SalaryCategoryController extends Controller
         // Validation
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
+            'type_id' => 'required',
             'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
         ]);
         
@@ -130,6 +133,7 @@ class SalaryCategoryController extends Controller
             $salary_category = SalaryCategory::find($request->id);
             $salary_category->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
             $salary_category->name = $request->name;
+            $salary_category->type_id = $request->type_id;
             $salary_category->save();
 
             // Redirect

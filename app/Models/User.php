@@ -62,4 +62,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Position::class, 'position_id');
     }
+
+    /**
+     * Get the indicators for the user.
+     */
+    public function indicators()
+    {
+        return $this->hasMany(\App\Models\UserIndicator::class);
+    }
 }

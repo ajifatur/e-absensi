@@ -38,6 +38,7 @@
                                     <th width="20"><input type="checkbox"></th>
                                     <th>Kategori</th>
                                     <th>Grup</th>
+                                    <th width="80">Tipe</th>
                                     <th width="40">Opsi</th>
                                 </tr>
                             </thead>
@@ -48,10 +49,16 @@
                                         <td>{{ $category->name }}</td>
                                         <td>
                                             @if($category->group)
-                                                <a href="{{ route('admin.group.detail', ['id' => $category->group->id]) }}">{{ $category->group->name }}</a></td>
+                                                <a href="{{ route('admin.group.detail', ['id' => $category->group->id]) }}">{{ $category->group->name }}</a>
                                             @else
                                                 -
                                             @endif
+                                        </td>
+                                        <td>
+                                            @if($category->type_id == 1) Manual
+                                            @elseif($category->type_id == 2) Masa Kerja (Bulan)
+                                            @endif
+                                        </td>
                                         <td>
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.salary-category.edit', ['id' => $category->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>

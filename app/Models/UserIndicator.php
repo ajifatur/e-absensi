@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SalaryCategory extends Model
+class UserIndicator extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class SalaryCategory extends Model
      *
      * @var string
      */
-    protected $table = 'salary_categories';
+    protected $table = 'user_indicators';
 
     /**
      * Fill the model with an array of attributes.
@@ -24,21 +24,21 @@ class SalaryCategory extends Model
      *
      * @throws \Illuminate\Database\Eloquent\MassAssignmentException
      */
-    protected $fillable = ['name', 'type'];
+    protected $fillable = ['value'];
     
     /**
-     * Get the group that owns the salary category.
+     * Get the user that owns the indicator.
      */
-    public function group()
+    public function user()
     {
-        return $this->belongsTo(Group::class, 'group_id');
+        return $this->belongsTo(Group::class, 'user_id');
     }
 
     /**
-     * Get the salary indicators for the salary category.
+     * Get the salary category that owns the indicator.
      */
-    public function indicators()
+    public function salary_category()
     {
-        return $this->hasMany(\App\Models\SalaryIndicator::class, 'category_id');
+        return $this->belongsTo(SalaryCategory::class, 'category_id');
     }
 }

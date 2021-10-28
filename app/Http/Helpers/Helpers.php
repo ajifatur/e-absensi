@@ -54,3 +54,20 @@ if(!function_exists('attendance')) {
         return $attendances;
     }
 }
+
+// Filter string
+if(!function_exists('filter_string')) {
+    function filter_string($text, $strings) {
+        $result = $text;
+        if(is_array($strings)) {
+            foreach($strings as $string) {
+                $result = str_replace($string, '', $result);
+            }
+        }
+        elseif(is_string($strings)) {
+            $result = str_replace($strings, '', $result);
+        }
+
+        return $result;
+    }
+}
