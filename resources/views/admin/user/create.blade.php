@@ -25,11 +25,17 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-lg-2 col-form-label">Role <span class="text-danger">*</span></label>
                             <div class="col-md-9 col-lg-4">
-                                <select name="role" class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}" id="role">
+                                <select name="role" class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}" id="role" {{ Auth::user()->role == role('manager') ? 'disabled' : '' }}>
                                     <option value="" disabled selected>--Pilih--</option>
-                                    @foreach($roles as $role)
-                                    <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
-                                    @endforeach
+                                    @if(Auth::user()->role != role('manager'))
+                                        @foreach($roles as $role)
+                                        <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                                        @endforeach
+                                    @else
+                                        @foreach($roles as $role)
+                                        <option value="{{ $role->id }}" {{ Auth::user()->role == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                                 @if($errors->has('role'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('role')) }}</div>
@@ -332,8 +338,8 @@
 
     // Change Office
     $(document).on("change", "#kantor", function(){
-      var value = $(this).val();
-      value == 0 ? $("#jabatan").attr("disabled","disabled") : $("#jabatan").removeAttr("disabled");;
+        var value = $(this).val();
+        value == 0 ? $("#jabatan").attr("disabled","disabled") : $("#jabatan").removeAttr("disabled");
     });
 
     // Input Number Only

@@ -54,7 +54,10 @@
         <div class="col-md-12">
         <div class="tile">
             <div class="tile-title-w-btn">
-            <h3 class="title">Report Absensi</h3>
+                <div></div>
+                <div>
+                    <a class="btn btn-sm btn-primary" href="{{ route('admin.attendance.create') }}"><i class="fa fa-lg fa-plus"></i> Input Absensi</a>
+                </div>
             </div>
             <div class="tile-body">
                 @if(Session::get('message') != null)

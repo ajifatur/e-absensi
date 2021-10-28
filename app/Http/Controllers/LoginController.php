@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
@@ -26,10 +27,20 @@ class LoginController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required'],
-            'password' => ['required'],
+        // Validator
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|min:6',
+            'password' => 'required|string|min:6',
         ]);
+
+        // Check login type
+        $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        // Set credentials
+        $credentials = [
+			$loginType => $request->username,
+			'password' => $request->password
+		];
 
         if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -41,7 +52,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'message' => 'The provided credentials do not match our records.',
+            'message' => 'Username atau password yang dimasukkan tidak tersedia.',
         ]);
     }
     

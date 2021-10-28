@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/office', 'OfficeController@index')->name('api.office.index');
 Route::get('/position', 'PositionController@index')->name('api.position.index');
+Route::get('/salary-category', 'SalaryCategoryController@index')->name('api.salary-category.index');

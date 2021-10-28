@@ -74,6 +74,22 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        // Get groups
+        $groups = Group::all();
+
+        // View
+        return view('admin/attendance/create', [
+            'groups' => $groups
+        ]);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request  $request

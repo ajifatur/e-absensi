@@ -49,4 +49,12 @@ class Group extends Model
     {
         return $this->hasMany(\App\Models\Position::class);
     }
+
+    /**
+     * Get the categories for the group.
+     */
+    public function categories()
+    {
+        return $this->hasMany(\App\Models\SalaryCategory::class);
+    }
 }

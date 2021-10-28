@@ -33,4 +33,12 @@ class SalaryIndicator extends Model
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
+
+    /**
+     * Get the category that owns the salary indicator.
+     */
+    public function category()
+    {
+        return $this->belongsTo(SalaryCategory::class, 'category_id');
+    }
 }

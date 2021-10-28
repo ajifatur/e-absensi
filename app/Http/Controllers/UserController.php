@@ -41,7 +41,7 @@ class UserController extends Controller
             elseif($request->query('role') == 'manager')
                 $users = User::where('role','=',role('manager'))->where('group_id','=',Auth::user()->group_id)->get();
             elseif($request->query('role') == 'member')
-                $users = $request->query('office') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->get();
+                $users = $request->query('office') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->where('end_date','=',null)->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('end_date','=',null)->get();
             else
                 return redirect()->route('admin.user.index', ['role' => 'member']);
         }
@@ -49,7 +49,7 @@ class UserController extends Controller
             if($request->query('role') == 'admin' || $request->query('role') == 'manager')
                 abort(403);
             elseif($request->query('role') == 'member')
-                $users = $request->query('office') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->get();
+                $users = $request->query('office') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->where('end_date','=',null)->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('end_date','=',null)->get();
             else
                 return redirect()->route('admin.user.index', ['role' => 'member']);
         }
@@ -64,7 +64,7 @@ class UserController extends Controller
             $offices = [];
 
         // Set the users prop
-        if(count($users) > 0) {
+        if(count($users) > 0 && $request->query('role') == 'member') {
             foreach($users as $key=>$user) {
                 // Set the period by month
                 $users[$key]->period = abs(Date::diff($user->start_date, date('Y-m').'-24')['days']) / 30;
@@ -117,7 +117,7 @@ class UserController extends Controller
     {
         // Validation
         $validator = Validator::make($request->all(), [
-            'role' => 'required',
+            'role' => Auth::user()->role == role('manager') ? '' : 'required',
             'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
             'office_id' => !in_array($request->role, [role('admin'), role('manager')]) ? 'required' : '',
             'position_id' => !in_array($request->role, [role('admin'), role('manager')]) ? 'required' : '',
@@ -218,6 +218,7 @@ class UserController extends Controller
     {
         // Validation
         $validator = Validator::make($request->all(), [
+            'role' => Auth::user()->role == role('manager') ? '' : 'required',
             'office_id' => $request->role != role('admin') ? 'required' : '',
             'position_id' => $request->role != role('admin') ? 'required' : '',
             'name' => 'required|max:200',
@@ -231,7 +232,6 @@ class UserController extends Controller
                 'required', 'alpha_dash', 'min:4', Rule::unique('users')->ignore($request->id, 'id')
             ],
             'password' => $request->password != '' ? 'min:6' : '',
-            'role' => 'required',
             // 'status' => 'required'
         ]);
         

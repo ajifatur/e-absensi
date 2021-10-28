@@ -17,8 +17,11 @@
             </div>
             <div class="login-box">
                 <form class="login-form" action="{{ route('auth.post-login') }}" method="post">
-                    {{ csrf_field() }}
+                    @csrf
                     <h3 class="login-head">Selamat Datang!</h3>
+                    @if($errors->has('message'))
+                    <div class="alert alert-danger text-center">{{ $errors->first('message') }}</div>
+                    @endif
                     <div class="form-group">
                         <label class="control-label">EMAIL / USERNAME</label>
                         <input class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" name="username" type="text" placeholder="Masukkan Email / Username" value="{{ old('username') }}" autofocus>

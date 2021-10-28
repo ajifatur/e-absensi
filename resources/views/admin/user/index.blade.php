@@ -43,20 +43,24 @@
                         <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" width="20">#</th>
-                                    <th rowspan="2">Identitas</th>
-                                    <th rowspan="2">Kantor, Jabatan</th>
-                                    <th rowspan="2" width="80">Tanggal Kontrak</th>
-                                    <th rowspan="2" width="80">Masa Kerja (Bulan)</th>
-                                    <th colspan="{{ count($categories) }}">Rincian Gaji (Rp.)</th>
-                                    <th rowspan="2" width="80">Total (Rp.)</th>
-                                    <th rowspan="2" width="40">Opsi</th>
+                                    <th rowspan="{{ Request::query('role') == 'member' ? 2 : 1 }}" width="20">#</th>
+                                    <th rowspan="{{ Request::query('role') == 'member' ? 2 : 1 }}">Identitas</th>
+                                    <th rowspan="{{ Request::query('role') == 'member' ? 2 : 1 }}">Kantor, Jabatan</th>
+                                    @if(Request::query('role') == 'member')
+                                        <th rowspan="2" width="80">Tanggal Kontrak</th>
+                                        <th rowspan="2" width="80">Masa Kerja (Bulan)</th>
+                                        <th colspan="{{ count($categories) }}">Rincian Gaji (Rp.)</th>
+                                        <th rowspan="2" width="80">Total (Rp.)</th>
+                                    @endif
+                                    <th rowspan="{{ Request::query('role') == 'member' ? 2 : 1 }}" width="40">Opsi</th>
                                 </tr>
-                                <tr>
-                                    @foreach($categories as $category)
-                                    <th width="80">{{ $category }}</th>
-                                    @endforeach
-                                </tr>
+                                @if(Request::query('role') == 'member')
+                                    <tr>
+                                        @foreach($categories as $category)
+                                        <th width="80">{{ $category }}</th>
+                                        @endforeach
+                                    </tr>
+                                @endif
                             </thead>
                             <tbody>
                                 @foreach($users as $user)
@@ -82,19 +86,21 @@
                                             <small class="text-muted">{{ $user->position ? $user->position->name : '' }}</small>
                                         @endif
                                         </td>
-                                        <td>
-                                            <span class="d-none">{{ $user->end_date == null ? 1 : 0 }} {{ $user->start_date }}</span>
-                                            @if($user->end_date == null)
-                                                {{ date('d/m/Y', strtotime($user->start_date)) }}
-                                            @else
-                                                <span class="badge badge-danger">Tidak Aktif</span>
-                                            @endif
-                                        </td>
-                                        <td align="right">{{ number_format($user->period,1,'.',',') }}</td>
-                                        @foreach($user->salaries as $salary)
-                                        <td align="right">{{ number_format($salary,0,',',',') }}</td>
-                                        @endforeach
-                                        <td align="right">{{ number_format(array_sum($user->salaries),0,',',',') }}</td>
+                                        @if(Request::query('role') == 'member')
+                                            <td>
+                                                <span class="d-none">{{ $user->end_date == null ? 1 : 0 }} {{ $user->start_date }}</span>
+                                                @if($user->end_date == null)
+                                                    {{ date('d/m/Y', strtotime($user->start_date)) }}
+                                                @else
+                                                    <span class="badge badge-danger">Tidak Aktif</span>
+                                                @endif
+                                            </td>
+                                            <td align="right">{{ number_format($user->period,1,'.',',') }}</td>
+                                            @foreach($user->salaries as $salary)
+                                            <td align="right">{{ number_format($salary,0,',',',') }}</td>
+                                            @endforeach
+                                            <td align="right">{{ number_format(array_sum($user->salaries),0,',',',') }}</td>
+                                        @endif
                                         <td align="center">
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.user.edit', ['id' => $user->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>

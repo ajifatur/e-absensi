@@ -26,7 +26,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-lg-2 col-form-label">Role <span class="text-danger">*</span></label>
                             <div class="col-md-9 col-lg-4">
-                                <select name="role" class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}" id="role">
+                                <select name="role" class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}" id="role" {{ Auth::user()->role == role('manager') ? 'disabled' : '' }}>
                                     <option value="" disabled selected>--Pilih--</option>
                                     @foreach($roles as $role)
                                     <option value="{{ $role->id }}" {{ $user->role == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
