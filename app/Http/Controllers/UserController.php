@@ -99,7 +99,7 @@ class UserController extends Controller
         return view('admin/user/index', [
             'users' => $users,
             'offices' => $offices,
-            'categories' => $categories,
+            'categories' => $request->query('role') == 'member' ? $categories : [],
         ]);
     }
 
