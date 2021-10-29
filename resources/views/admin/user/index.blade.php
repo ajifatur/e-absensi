@@ -20,7 +20,7 @@
             <div class="tile">
                 <div class="tile-title-w-btn">
                     <div>
-                        @if((Auth::user()->role == role('admin') || Auth::user()->role == role('manager')) && $_GET['role'] == 'member')
+                        @if($_GET['role'] == 'member')
                         <select name="office" id="office" class="form-control form-control-sm">
                             <option value="">Semua Kantor</option>
                             @foreach($offices as $office)
@@ -43,7 +43,7 @@
                         <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th rowspan="{{ Request::query('role') == 'member' ? 2 : 1 }}" width="20">#</th>
+                                    <th rowspan="{{ Request::query('role') == 'member' ? 2 : 1 }}" width="20"></th>
                                     <th rowspan="{{ Request::query('role') == 'member' ? 2 : 1 }}">Identitas</th>
                                     <th rowspan="{{ Request::query('role') == 'member' ? 2 : 1 }}">Kantor, Jabatan</th>
                                     @if(Request::query('role') == 'member')
@@ -103,7 +103,9 @@
                                         @endif
                                         <td align="center">
                                             <div class="btn-group">
+                                                @if($user->role == role('member'))
                                                 <a href="{{ route('admin.user.edit-indicator', ['id' => $user->id]) }}" class="btn btn-info btn-sm" title="Edit Indikator"><i class="fa fa-cog"></i></a>
+                                                @endif
                                                 <a href="{{ route('admin.user.edit', ['id' => $user->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                                                 @if(Auth::user()->role == role('super-admin'))
                                                 <a href="#" class="btn btn-danger btn-sm {{ $user->id > 1 ? 'btn-delete' : '' }}" data-id="{{ $user->id }}" style="{{ $user->id > 1 ? '' : 'cursor: not-allowed' }}" title="{{ $user->id <= 1 ? $user->id == Auth::user()->id ? 'Tidak dapat menghapus akun sendiri' : 'Akun ini tidak boleh dihapus' : 'Hapus' }}"><i class="fa fa-trash"></i></a>
@@ -149,7 +151,7 @@
 		}
 	});
 
-    // Change office
+    // Change the Office
     $(document).on("change", "#office", function() {
         var office = $(this).val();
         if(office == '')

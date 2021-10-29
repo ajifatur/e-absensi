@@ -29,7 +29,7 @@ class DashboardController extends Controller
             // Display attendance if is already exit
             if(count($is_entry) <= 0) {
                 // Get work hours
-		        $work_hours = WorkHour::where('category','=',Auth::user()->position->work_hours)->where('group_id','=',Auth::user()->group_id)->get();
+		        $work_hours = WorkHour::where('group_id','=',Auth::user()->group_id)->where('office_id','=',Auth::user()->office_id)->where('position_id','=',Auth::user()->position_id)->get();
 
                 if(count($work_hours) > 0) {
                     foreach($work_hours as $key=>$work_hour) {

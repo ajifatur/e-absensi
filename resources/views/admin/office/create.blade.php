@@ -21,10 +21,6 @@
             <div class="tile">
                 <form method="post" action="{{ route('admin.office.store') }}">
                     @csrf
-                    <div class="tile-title-w-btn">
-                        <h3 class="title">Tambah Kantor</h3>
-                        <p><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></p>
-                    </div>
                     <div class="tile-body">
                         <div class="row">
                             <div class="form-group col-md-12">

@@ -66,7 +66,7 @@ class PositionController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
-            'work_hours' => 'required'
+            // 'work_hours' => 'required'
         ]);
         
         // Check errors
@@ -79,7 +79,7 @@ class PositionController extends Controller
             $position = new Position;
             $position->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
             $position->name = $request->name;
-            $position->work_hours = $request->work_hours;
+            $position->work_hours = 0;
             $position->save();
 
             // Redirect
@@ -137,7 +137,7 @@ class PositionController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
-            'work_hours' => 'required'
+            // 'work_hours' => 'required'
         ]);
         
         // Check errors
@@ -150,7 +150,7 @@ class PositionController extends Controller
             $position = Position::find($request->id);
             $position->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
             $position->name = $request->name;
-            $position->work_hours = $request->work_hours;
+            // $position->work_hours = $request->work_hours;
             $position->save();
 
             // Redirect

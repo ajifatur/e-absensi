@@ -32,13 +32,13 @@
                     </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th width="20"><input type="checkbox"></th>
+                                    <th width="20"></th>
                                     <th>Kategori</th>
-                                    <th>Grup</th>
                                     <th width="80">Tipe</th>
+                                    <th width="150">Grup</th>
                                     <th width="40">Opsi</th>
                                 </tr>
                             </thead>
@@ -48,15 +48,13 @@
                                         <td align="center"><input type="checkbox"></td>
                                         <td>{{ $category->name }}</td>
                                         <td>
-                                            @if($category->group)
-                                                <a href="{{ route('admin.group.detail', ['id' => $category->group->id]) }}">{{ $category->group->name }}</a>
-                                            @else
-                                                -
+                                            @if($category->type_id == 1) Manual
+                                            @elseif($category->type_id == 2) Masa Kerja (Bulan)
                                             @endif
                                         </td>
                                         <td>
-                                            @if($category->type_id == 1) Manual
-                                            @elseif($category->type_id == 2) Masa Kerja (Bulan)
+                                            @if($category->group)
+                                                <a href="{{ route('admin.group.detail', ['id' => $category->group->id]) }}">{{ $category->group->name }}</a>
                                             @endif
                                         </td>
                                         <td>

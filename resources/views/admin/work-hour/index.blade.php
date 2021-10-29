@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-clock-o"></i> Kelola Jam Kerja</h1>
-            <p>Menu untuk mengelola data jam kerja</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -20,7 +19,7 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-title-w-btn">
-                    <h3 class="title">Kelola Jam Kerja</h3>
+                    <div></div>
                     <div class="btn-group">
                         <a class="btn btn-sm btn-primary" href="{{ route('admin.work-hour.create') }}"><i class="fa fa-lg fa-plus"></i> Tambah Data</a>
                     </div>
@@ -32,14 +31,15 @@
                     </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th width="20"><input type="checkbox"></th>
+                                    <th width="20"></th>
                                     <th>Jam Kerja</th>
-                                    <th>Grup</th>
-                                    <th width="80">Kategori</th>
+                                    <th width="150">Kantor</th>
+                                    <th width="150">Jabatan</th>
                                     <th width="60">Kuota</th>
+                                    <th width="150">Grup</th>
                                     <th width="40">Opsi</th>
                                 </tr>
                             </thead>
@@ -52,13 +52,23 @@
                                             <small class="text-muted">{{ date('H:i', strtotime($work_hour->start_at)) }} - {{ date('H:i', strtotime($work_hour->end_at)) }}</small>
                                         </td>
                                         <td>
+                                            @if($work_hour->office)
+                                                <a href="{{ route('admin.office.detail', ['id' => $work_hour->office->id]) }}">{{ $work_hour->office->name }}</a>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($work_hour->position)
+                                                <a href="{{ route('admin.office.detail', ['id' => $work_hour->position->id]) }}">{{ $work_hour->position->name }}</a>
+                                            @endif
+                                        </td>
+                                        <td>{{ $work_hour->quota }}</td>
+                                        <td>
                                             @if($work_hour->group)
-                                                <a href="{{ route('admin.group.detail', ['id' => $work_hour->group->id]) }}">{{ $work_hour->group->name }}</a></td>
+                                                <a href="{{ route('admin.group.detail', ['id' => $work_hour->group->id]) }}">{{ $work_hour->group->name }}</a>
                                             @else
                                                 -
                                             @endif
-                                        <td>{{ $work_hour->category == 1 ? 'Full-Time' : 'Part-Time' }}</td>
-                                        <td>{{ $work_hour->quota }}</td>
+                                        </td>
                                         <td>
                                             <div class="btn-group">
                                                 <a href="{{ $work_hour->name != 'Head work_hour' ? route('admin.work-hour.edit', ['id' => $work_hour->id]) : '#' }}" class="btn btn-warning btn-sm" style="{{ $work_hour->name != 'Head work_hour' ? '' : 'cursor: not-allowed' }}" title="{{ $work_hour->name != 'Head work_hour' ? 'Edit' : 'Tidak diizinikan mengedit data ini' }}"><i class="fa fa-edit"></i></a>

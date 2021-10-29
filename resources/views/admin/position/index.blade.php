@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-refresh"></i> Kelola Jabatan</h1>
-            <p>Menu untuk mengelola data jabatan</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -20,7 +19,7 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-title-w-btn">
-                    <h3 class="title">Kelola Jabatan</h3>
+                    <div></div>
                     <div class="btn-group">
                         <a class="btn btn-sm btn-primary" href="{{ route('admin.position.create') }}"><i class="fa fa-lg fa-plus"></i> Tambah Data</a>
                     </div>
@@ -32,13 +31,13 @@
                     </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th width="20"><input type="checkbox"></th>
+                                    <th width="20"></th>
                                     <th>Nama Jabatan</th>
-                                    <th>Grup</th>
-                                    <th width="80">Jam Kerja</th>
+                                    <th width="80">Karyawan</th>
+                                    <th width="150">Grup</th>
                                     <th width="40">Opsi</th>
                                 </tr>
                             </thead>
@@ -46,18 +45,19 @@
                                 @foreach($positions as $position)
                                     <tr>
                                         <td align="center"><input type="checkbox"></td>
-                                        <td><a href="{{ route('admin.position.detail', ['id' => $position->id]) }}">{{ $position->name }}</a><br><small class="text-muted">{{ number_format(count($position->users),0,'.','.') }} orang</small></td>
+                                        <td><a href="{{ route('admin.position.detail', ['id' => $position->id]) }}">{{ $position->name }}</a></td>
+                                        <td align="right">{{ number_format($position->users()->where('role','=',role('member'))->where('end_date','=',null)->count(),0,',',',') }}</td>
                                         <td>
                                             @if($position->group)
-                                                <a href="{{ route('admin.group.detail', ['id' => $position->group->id]) }}">{{ $position->group->name }}</a></td>
+                                                <a href="{{ route('admin.group.detail', ['id' => $position->group->id]) }}">{{ $position->group->name }}</a>
                                             @else
                                                 -
                                             @endif
-                                        <td>{{ $position->work_hours == 1 ? 'Full-Time' : 'Part-Time' }}</td>
+                                        </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{{ $position->name != 'Head position' ? route('admin.position.edit', ['id' => $position->id]) : '#' }}" class="btn btn-warning btn-sm" style="{{ $position->name != 'Head position' ? '' : 'cursor: not-allowed' }}" title="{{ $position->name != 'Head position' ? 'Edit' : 'Tidak diizinikan mengedit data ini' }}"><i class="fa fa-edit"></i></a>
-                                                <a href="#" class="btn btn-danger btn-sm {{ $position->name != 'Head position' ? 'btn-delete' : '' }}" data-id="{{ $position->id }}" style="{{ $position->name != 'Head position' ? '' : 'cursor: not-allowed' }}" title="{{ $position->name != 'Head position' ? 'Hapus' : 'Tidak diizinikan menghapus data ini' }}"><i class="fa fa-trash"></i></a>
+                                                <a href="{{ route('admin.position.edit', ['id' => $position->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
+                                                <a href="#" class="btn btn-danger btn-sm btn-delete" data-id="{{ $position->id }}" title="Hapus"><i class="fa fa-trash"></i></a>
                                             </div>
                                         </td>
                                     </tr>

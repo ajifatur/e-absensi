@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-home"></i> Edit Kantor</h1>
-            <p>Menu untuk mengedit data kantor</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -22,10 +21,6 @@
                 <form method="post" action="{{ route('admin.office.update') }}">
                     @csrf
                     <input type="hidden" name="id" value="{{ $office->id }}">
-                    <div class="tile-title-w-btn">
-                        <h3 class="title">Edit Kantor</h3>
-                        <p><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></p>
-                    </div>
                     <div class="tile-body">
                         <div class="row">
                             <div class="form-group col-md-12">

@@ -33,4 +33,20 @@ class WorkHour extends Model
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
+
+    /**
+     * Get the office that owns the office.
+     */
+    public function office()
+    {
+        return $this->belongsTo(Office::class, 'office_id');
+    }
+
+    /**
+     * Get the position that owns the office.
+     */
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
+    }
 }

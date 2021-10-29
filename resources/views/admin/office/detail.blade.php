@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-home"></i> Detail Kantor</h1>
-            <p>Menu untuk menampilkan detail kantor</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -20,7 +19,7 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-title-w-btn">
-                    <h3 class="title">Detail Kantor</h3>
+                    <div></div>
                     <h5>{{ $office->name }} ({{ $office->group ? $office->group->name : '-' }})</h5>
                 </div>
                 <div class="tile-body">
@@ -30,17 +29,17 @@
                     </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th width="20"><input type="checkbox"></th>
+                                    <th width="20"></th>
                                     <th>Identitas</th>
-                                    <th>Kantor, Jabatan</th>
+                                    <th width="150">Jabatan</th>
                                     <th width="40">Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($office->users as $user)
+                                @foreach($office->users()->where('role','=',role('member'))->where('end_date','=',null)->get() as $user)
                                     <tr>
                                         <td align="center"><input type="checkbox"></td>
                                         <td>
@@ -51,13 +50,9 @@
                                             <small class="text-muted">{{ $user->phone_number }}</small>
                                         </td>
                                         <td>
-                                        @if(Auth::user()->role == role('super-admin') && $user->role == role('super-admin'))
-                                            SUPER ADMIN
-                                        @else
-                                            {{ $user->role == role('admin') && $user->office_id == 0 ? 'ADMIN' : $user->office->name }}
-                                            <br>
-                                            <small class="text-muted">{{ $user->position ? $user->position->name : '' }}</small>
-                                        @endif
+                                            @if($user->position)
+                                                <a href="{{ route('admin.position.detail', ['id' => $user->position->id]) }}">{{ $user->position->name }}</a>
+                                            @endif
                                         </td>
                                         <td>
                                             <div class="btn-group">

@@ -32,15 +32,15 @@
                     </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th width="20"><input type="checkbox"></th>
+                                    <th width="20"></th>
                                     <th>Indikator</th>
-                                    <th>Grup</th>
                                     <th width="40">Batas Bawah</th>
                                     <th width="40">Batas Atas</th>
                                     <th width="80">Jumlah (Rp.)</th>
+                                    <th width="150">Grup</th>
                                     <th width="40">Opsi</th>
                                 </tr>
                             </thead>
@@ -49,15 +49,14 @@
                                     <tr>
                                         <td align="center"><input type="checkbox"></td>
                                         <td>{{ $indicator->category->name }}</td>
+                                        <td align="right">{{ $indicator->lower_range }}</td>
+                                        <td align="right">{{ $indicator->upper_range != null ? $indicator->upper_range : '∞' }}</td>
+                                        <td align="right">{{ number_format($indicator->amount,0,',',',') }}</td>
                                         <td>
                                             @if($indicator->group)
-                                                <a href="{{ route('admin.group.detail', ['id' => $indicator->group->id]) }}">{{ $indicator->group->name }}</a></td>
-                                            @else
-                                                -
+                                                <a href="{{ route('admin.group.detail', ['id' => $indicator->group->id]) }}">{{ $indicator->group->name }}</a>
                                             @endif
-                                        <td>{{ $indicator->lower_range }}</td>
-                                        <td>{{ $indicator->upper_range != null ? $indicator->upper_range : '∞' }}</td>
-                                        <td>{{ number_format($indicator->amount,0,',',',') }}</td>
+                                        </td>
                                         <td>
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.salary-indicator.edit', ['id' => $indicator->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>

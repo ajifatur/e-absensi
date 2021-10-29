@@ -8,8 +8,7 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-dot-circle-o"></i> Tambah Grup</h1>
-            <p>Menu untuk menambah data grup</p>
-            </div>
+        </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
             <li class="breadcrumb-item"><a href="{{ route('admin.group.index') }}">Grup</a></li>

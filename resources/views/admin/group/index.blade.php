@@ -8,11 +8,10 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-dot-circle-o"></i> Kelola Grup</h1>
-            <p>Menu untuk mengelola data grup</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-            <li class="breadcrumb-item"><a href="/admin/grup">Grup</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.group.index') }}">Grup</a></li>
             <li class="breadcrumb-item">Kelola Grup</li>
         </ul>
     </div>
@@ -34,15 +33,21 @@
                     </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th width="20"><input type="checkbox"></th>
-                                    <th>Nama</th>
-                                    <th width="70">Kantor</th>
-                                    <th width="70">Jabatan</th>
-                                    <th width="70">User</th>
-                                    <th width="40">Opsi</th>
+                                    <th rowspan="2" width="20"></th>
+                                    <th rowspan="2">Nama</th>
+                                    <th rowspan="2" width="70">Kantor</th>
+                                    <th rowspan="2" width="70">Jabatan</th>
+                                    <th colspan="4">User</th>
+                                    <th rowspan="2" width="40">Opsi</th>
+                                </tr>
+                                <tr>
+                                    <th width="70">Admin</th>
+                                    <th width="70">Manager</th>
+                                    <th width="70">Karyawan Aktif</th>
+                                    <th width="70">Karyawan Nonaktif</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,9 +55,12 @@
                                     <tr>
                                         <td align="center"><input type="checkbox"></td>
                                         <td><a href="{{ route('admin.group.detail', ['id' => $group->id]) }}">{{ $group->name }}</a></td>
-                                        <td>{{ number_format(count($group->offices),0,'.','.') }}</td>
-                                        <td>{{ number_format(count($group->positions),0,'.','.') }}</td>
-                                        <td>{{ number_format(count($group->users),0,'.','.') }}</td>
+                                        <td>{{ number_format($group->offices->count(),0,',',',') }}</td>
+                                        <td>{{ number_format($group->positions->count(),0,',',',') }}</td>
+                                        <td>{{ number_format($group->users()->where('role','=',role('admin'))->count(),0,',',',') }}</td>
+                                        <td>{{ number_format($group->users()->where('role','=',role('manager'))->count(),0,',',',') }}</td>
+                                        <td>{{ number_format($group->users()->where('role','=',role('member'))->where('end_date','=',null)->count(),0,',',',') }}</td>
+                                        <td>{{ number_format($group->users()->where('role','=',role('member'))->where('end_date','!=',null)->count(),0,',',',') }}</td>
                                         <td>
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.group.edit', ['id' => $group->id]) }}" class="btn btn-warning btn-sm" data-id="{{ $group->id }}" title="Edit"><i class="fa fa-edit"></i></a>

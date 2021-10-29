@@ -59,7 +59,9 @@ class WorkHourController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
-            'category' => 'required',
+            // 'category' => 'required',
+            'office_id' => 'required',
+            'position_id' => 'required',
             'quota' => 'required|numeric',
             'start_at' => 'required',
             'end_at' => 'required',
@@ -74,8 +76,10 @@ class WorkHourController extends Controller
             // Save the work_hour
             $work_hour = new WorkHour;
             $work_hour->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
+            $work_hour->office_id = $request->office_id;
+            $work_hour->position_id = $request->position_id;
             $work_hour->name = $request->name;
-            $work_hour->category = $request->category;
+            $work_hour->category = 0;
             $work_hour->quota = $request->quota;
             $work_hour->start_at = $request->start_at.':00';
             $work_hour->end_at = $request->end_at.':00';
@@ -118,8 +122,9 @@ class WorkHourController extends Controller
         // Validation
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
-            'category' => 'required',
+            // 'category' => 'required',
+            'office_id' => 'required',
+            'position_id' => 'required',
             'quota' => 'required|numeric',
             'start_at' => 'required',
             'end_at' => 'required',
@@ -133,9 +138,10 @@ class WorkHourController extends Controller
         else{
             // Update the work hour
             $work_hour = WorkHour::find($request->id);
-            $work_hour->group_id = Auth::user()->role == role('super-admin') ? $request->group_id : Auth::user()->group_id;
             $work_hour->name = $request->name;
-            $work_hour->category = $request->category;
+            // $work_hour->category = $request->category;
+            $work_hour->office_id = $request->office_id;
+            $work_hour->position_id = $request->position_id;
             $work_hour->quota = $request->quota;
             $work_hour->start_at = $request->start_at.':00';
             $work_hour->end_at = $request->end_at.':00';

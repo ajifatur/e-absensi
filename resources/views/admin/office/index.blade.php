@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-home"></i> Kelola Kantor</h1>
-            <p>Menu untuk mengelola data kantor</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -20,7 +19,7 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-title-w-btn">
-                    <h3 class="title">Kelola Kantor</h3>
+                    <div></div>
                     <div class="btn-group">
                         <a class="btn btn-sm btn-primary" href="{{ route('admin.office.create') }}"><i class="fa fa-lg fa-plus"></i> Tambah Data</a>
                     </div>
@@ -32,12 +31,13 @@
                     </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th width="20"><input type="checkbox"></th>
+                                    <th width="20"></th>
                                     <th>Nama Kantor</th>
-                                    <th>Grup</th>
+                                    <th width="80">Karyawan</th>
+                                    <th width="150">Grup</th>
                                     <th width="40">Opsi</th>
                                 </tr>
                             </thead>
@@ -45,12 +45,11 @@
                                 @foreach($offices as $office)
                                     <tr>
                                         <td align="center"><input type="checkbox"></td>
-                                        <td><a href="{{ route('admin.office.detail', ['id' => $office->id]) }}">{{ $office->name }}</a><br><small class="text-muted">{{ number_format(count($office->users),0,'.','.') }} orang</small></td>
+                                        <td><a href="{{ route('admin.office.detail', ['id' => $office->id]) }}">{{ $office->name }}</a></td>
+                                        <td align="right">{{ number_format($office->users()->where('role','=',role('member'))->where('end_date','=',null)->count(),0,',',',') }}</td>
                                         <td>
                                             @if($office->group)
                                                 <a href="{{ route('admin.group.detail', ['id' => $office->group->id]) }}">{{ $office->group->name }}</a></td>
-                                            @else
-                                                -
                                             @endif
                                         <td>
                                             <div class="btn-group">

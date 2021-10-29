@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-clock-o"></i> Edit Jam Kerja</h1>
-            <p>Menu untuk mengedit data jam kerja</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -17,66 +16,71 @@
         </ul>
     </div>
     <div class="row">
-        <div class="col-lg-6 mx-auto">
+        <div class="col-lg-12">
             <div class="tile">
                 <form method="post" action="{{ route('admin.work-hour.update') }}">
                     @csrf
                     <input type="hidden" name="id" value="{{ $work_hour->id }}">
-                    <div class="tile-title-w-btn">
-                        <h3 class="title">Edit Jam Kerja</h3>
-                        <p><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></p>
-                    </div>
                     <div class="tile-body">
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <label>Nama Jam Kerja <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ $work_hour->name }}" placeholder="Masukkan Nama Jam Kerja">
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Nama Jam Kerja <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-10">
+                                <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ $work_hour->name }}">
                                 @if($errors->has('name'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('name')) }}</div>
                                 @endif
                             </div>
-                            @if(Auth::user()->role == role('super-admin'))
-                            <div class="form-group col-md-12">
-                                <label>Grup <span class="text-danger">*</span></label>
-                                <select name="group_id" class="form-control {{ $errors->has('group_id') ? 'is-invalid' : '' }}">
-                                    <option value="" disabled selected>--Pilih--</option>
-                                    @foreach($groups as $group)
-                                    <option value="{{ $group->id }}" {{ $work_hour->group_id == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Kantor <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <select name="office_id" class="form-control {{ $errors->has('office_id') ? 'is-invalid' : '' }}" id="office">
+                                    <option value="" selected>--Pilih--</option>
+                                    @foreach(\App\Models\Group::find($work_hour->group_id)->offices as $office)
+                                    <option value="{{ $office->id }}" {{ $work_hour->office_id == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
                                     @endforeach
                                 </select>
-                                @if($errors->has('group_id'))
-                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('group_id')) }}</div>
+                                @if($errors->has('office_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('office_id')) }}</div>
                                 @endif
                             </div>
-                            @endif
-                            <div class="form-group col-md-12">
-                                <label>Kategori <span class="text-danger">*</span></label>
-                                <select name="category" class="form-control {{ $errors->has('category') ? 'is-invalid' : '' }}">
-                                    <option value="" disabled selected>--Pilih--</option>
-                                    <option value="1" {{ $work_hour->category == 1 ? 'selected' : '' }}>Full-Time</option>
-                                    <option value="2" {{ $work_hour->category == 2 ? 'selected' : '' }}>Part-Time</option>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Jabatan <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <select name="position_id" class="form-control {{ $errors->has('position_id') ? 'is-invalid' : '' }}" id="position">
+                                    <option value="" selected>--Pilih--</option>
+                                    @foreach(\App\Models\Group::find($work_hour->group_id)->positions as $position)
+                                    <option value="{{ $position->id }}" {{ $work_hour->position_id == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                                    @endforeach
                                 </select>
-                                @if($errors->has('category'))
-                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('category')) }}</div>
+                                @if($errors->has('position_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('position_id')) }}</div>
                                 @endif
                             </div>
-                            <div class="form-group col-md-12">
-                                <label>Kuota <span class="text-danger">*</span></label>
-                                <input type="text" name="quota" class="form-control {{ $errors->has('quota') ? 'is-invalid' : '' }}" value="{{ $work_hour->quota }}" placeholder="Masukkan Kuota">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Kuota <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <input type="text" name="quota" class="form-control {{ $errors->has('quota') ? 'is-invalid' : '' }}" value="{{ $work_hour->quota }}">
                                 @if($errors->has('quota'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('quota')) }}</div>
                                 @endif
                             </div>
-                            <div class="form-group col-md-6">
-                                <label>Mulai <span class="text-danger">*</span></label>
-                                <input type="text" name="start_at" class="form-control clockpicker {{ $errors->has('start_at') ? 'is-invalid' : '' }}" value="{{ date('H:i', strtotime($work_hour->start_at)) }}" placeholder="Masukkan Jam Mulai" autocomplete="off">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Jam Mulai <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <input type="text" name="start_at" class="form-control clockpicker {{ $errors->has('start_at') ? 'is-invalid' : '' }}" value="{{ date('H:i', strtotime($work_hour->start_at)) }}" autocomplete="off">
                                 @if($errors->has('start_at'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('start_at')) }}</div>
                                 @endif
                             </div>
-                            <div class="form-group col-md-6">
-                                <label>Selesai <span class="text-danger">*</span></label>
-                                <input type="text" name="end_at" class="form-control clockpicker {{ $errors->has('end_at') ? 'is-invalid' : '' }}" value="{{ date('H:i', strtotime($work_hour->end_at)) }}" placeholder="Masukkan Jam Selesai" autocomplete="off">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Jam Selesai <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <input type="text" name="end_at" class="form-control clockpicker {{ $errors->has('end_at') ? 'is-invalid' : '' }}" value="{{ date('H:i', strtotime($work_hour->end_at)) }}" autocomplete="off">
                                 @if($errors->has('end_at'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('end_at')) }}</div>
                                 @endif
@@ -99,6 +103,35 @@
     // Clockpicker
     $(".clockpicker").clockpicker({
         autoclose: true
+    });
+
+    // Change Group
+    $(document).on("change", "#group", function() {
+        var group = $(this).val();
+        $.ajax({
+            type: "get",
+            url: "{{ route('api.office.index') }}",
+            data: {group: group},
+            success: function(result){
+                var html = '<option value="" selected>--Pilih--</option>';
+                $(result).each(function(key,value){
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#office").html(html).removeAttr("disabled");
+            }
+        });
+        $.ajax({
+            type: 'get',
+            url: "{{ route('api.position.index') }}",
+            data: {group: group},
+            success: function(result){
+                var html = '<option value="" selected>--Pilih--</option>';
+                $(result).each(function(key,value){
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#position").html(html).removeAttr("disabled");
+            }
+        });
     });
 </script>
 

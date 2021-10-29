@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-refresh"></i> Edit Jabatan</h1>
-            <p>Menu untuk mengedit data jabatan</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -22,10 +21,6 @@
                 <form method="post" action="{{ route('admin.position.update') }}">
                     @csrf
                     <input type="hidden" name="id" value="{{ $position->id }}">
-                    <div class="tile-title-w-btn">
-                        <h3 class="title">Edit Jabatan</h3>
-                        <p><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></p>
-                    </div>
                     <div class="tile-body">
                         <div class="row">
                             <div class="form-group col-md-12">
@@ -49,17 +44,6 @@
                                 @endif
                             </div>
                             @endif
-                            <div class="form-group col-md-12">
-                                <label>Jam Kerja <span class="text-danger">*</span></label>
-                                <select name="work_hours" class="form-control {{ $errors->has('work_hours') ? 'is-invalid' : '' }}">
-                                    <option value="" disabled selected>--Pilih--</option>
-                                    <option value="1" {{ $position->work_hours == 1 ? 'selected' : '' }}>Full-Time</option>
-                                    <option value="2" {{ $position->work_hours == 2 ? 'selected' : '' }}>Part-Time</option>
-                                </select>
-                                @if($errors->has('work_hours'))
-                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('work_hours')) }}</div>
-                                @endif
-                            </div>
                         </div>
                     </div>
                     <div class="tile-footer"><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></div>
