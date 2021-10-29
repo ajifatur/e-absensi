@@ -25,6 +25,30 @@
                     <div class="tile-body">
                         <div class="row">
                             <div class="form-group col-md-12">
+                                <label>Grup <span class="text-danger">*</span></label>
+                                <select name="group_id" class="form-control {{ $errors->has('group_id') ? 'is-invalid' : '' }}" disabled>
+                                    <option value="" disabled selected>--Pilih--</option>
+                                    @foreach($groups as $group)
+                                    <option value="{{ $group->id }}" {{ $salary_category->group_id == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+                                    @endforeach
+                                </select>
+                                @if($errors->has('group_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('group_id')) }}</div>
+                                @endif
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Jabatan <span class="text-danger">*</span></label>
+                                <select name="position_id" class="form-control {{ $errors->has('position_id') ? 'is-invalid' : '' }}" id="position">
+                                    <option value="" selected>--Pilih--</option>
+                                    @foreach(\App\Models\Group::find($salary_category->group_id)->positions as $position)
+                                    <option value="{{ $position->id }}" {{ $salary_category->position_id == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                                    @endforeach
+                                </select>
+                                @if($errors->has('position_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('position_id')) }}</div>
+                                @endif
+                            </div>
+                            <div class="form-group col-md-12">
                                 <label>Nama Kategori <span class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ $salary_category->name }}">
                                 @if($errors->has('name'))
@@ -42,20 +66,6 @@
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('type_id')) }}</div>
                                 @endif
                             </div>
-                            @if(Auth::user()->role == role('super-admin'))
-                            <div class="form-group col-md-12">
-                                <label>Grup <span class="text-danger">*</span></label>
-                                <select name="group_id" class="form-control {{ $errors->has('group_id') ? 'is-invalid' : '' }}">
-                                    <option value="" disabled selected>--Pilih--</option>
-                                    @foreach($groups as $group)
-                                    <option value="{{ $group->id }}" {{ $salary_category->group_id == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
-                                    @endforeach
-                                </select>
-                                @if($errors->has('group_id'))
-                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('group_id')) }}</div>
-                                @endif
-                            </div>
-                            @endif
                         </div>
                     </div>
                     <div class="tile-footer"><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></div>

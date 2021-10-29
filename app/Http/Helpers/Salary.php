@@ -18,7 +18,7 @@ class Salary
     public static function getAmountByRange($value, $group_id, $category)
     {
         // Get the category
-        $salary_category = SalaryCategory::where('group_id','=',$group_id)->where('name','=',$category)->first();
+        $salary_category = SalaryCategory::where('group_id','=',$group_id)->find($category);
 
         // Set the amount of salary
         $amount = 0;

@@ -40,6 +40,7 @@
                                     <th width="40">Batas Bawah</th>
                                     <th width="40">Batas Atas</th>
                                     <th width="80">Jumlah (Rp.)</th>
+                                    <th width="150">Jabatan</th>
                                     <th width="150">Grup</th>
                                     <th width="40">Opsi</th>
                                 </tr>
@@ -52,6 +53,11 @@
                                         <td align="right">{{ $indicator->lower_range }}</td>
                                         <td align="right">{{ $indicator->upper_range != null ? $indicator->upper_range : '∞' }}</td>
                                         <td align="right">{{ number_format($indicator->amount,0,',',',') }}</td>
+                                        <td>
+                                            @if($indicator->category && $indicator->category->position)
+                                                <a href="{{ route('admin.position.detail', ['id' => $indicator->category->position->id]) }}">{{ $indicator->category->position->name }}</a>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($indicator->group)
                                                 <a href="{{ route('admin.group.detail', ['id' => $indicator->group->id]) }}">{{ $indicator->group->name }}</a>

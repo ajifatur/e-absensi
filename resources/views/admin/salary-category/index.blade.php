@@ -37,7 +37,8 @@
                                 <tr>
                                     <th width="20"></th>
                                     <th>Kategori</th>
-                                    <th width="80">Tipe</th>
+                                    <th width="100">Tipe</th>
+                                    <th width="150">Jabatan</th>
                                     <th width="150">Grup</th>
                                     <th width="40">Opsi</th>
                                 </tr>
@@ -50,6 +51,11 @@
                                         <td>
                                             @if($category->type_id == 1) Manual
                                             @elseif($category->type_id == 2) Masa Kerja (Bulan)
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($category->position)
+                                                <a href="{{ route('admin.position.detail', ['id' => $category->position->id]) }}">{{ $category->position->name }}</a>
                                             @endif
                                         </td>
                                         <td>

@@ -19,7 +19,7 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-title-w-btn">
-                    <h3 class="title">Kelola Grup</h3>
+                    <div></div>
                     @if(Auth::user()->role == role('super-admin'))
                     <div class="btn-group">
                         <a class="btn btn-sm btn-primary" href="{{ route('admin.group.create') }}"><i class="fa fa-lg fa-plus"></i> Tambah Data</a>

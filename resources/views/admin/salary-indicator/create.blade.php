@@ -59,7 +59,7 @@
                                     @if(old('category_id') != null || old('group_id') != null)
                                         <option value="" selected>--Pilih--</option>
                                         @foreach(\App\Models\Group::find(old('group_id'))->categories as $category)
-                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->position->name }})</option>
                                         @endforeach
                                     @else
                                         <option value="" selected>--Pilih--</option>
@@ -67,7 +67,7 @@
                                 @else
                                     <option value="" selected>--Pilih--</option>
                                     @foreach(\App\Models\Group::find(Auth::user()->group_id)->categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->position->name }})</option>
                                     @endforeach
                                 @endif
                                 </select>

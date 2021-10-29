@@ -33,6 +33,14 @@ class SalaryCategory extends Model
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
+    
+    /**
+     * Get the position that owns the salary category.
+     */
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
+    }
 
     /**
      * Get the salary indicators for the salary category.

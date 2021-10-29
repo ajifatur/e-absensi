@@ -24,6 +24,57 @@
                     <div class="tile-body">
                         <div class="row">
                             <div class="form-group col-md-12">
+                                <label>Grup <span class="text-danger">*</span></label>
+                                <select name="group_id" id="group" class="form-control {{ $errors->has('group_id') ? 'is-invalid' : '' }}" {{ Auth::user()->role == role('super-admin') ? '' : 'disabled' }}>
+                                    <option value="" disabled selected>--Pilih--</option>
+                                    @if(Auth::user()->role == role('super-admin'))
+                                        @foreach($groups as $group)
+                                        <option value="{{ $group->id }}" {{ old('group_id') == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+                                        @endforeach
+                                    @else
+                                        @foreach($groups as $group)
+                                        <option value="{{ $group->id }}" {{ Auth::user()->group_id == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                @if($errors->has('group_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('group_id')) }}</div>
+                                @endif
+                            </div>
+                            @php
+                                $disabled_selected = '';
+                                if(Auth::user()->role == role('super-admin')) {
+                                    if(old('group_id') == null) $disabled_selected = 'disabled';
+                                    elseif(in_array(old('role'), [role('admin'), role('manager')])) $disabled_selected = 'disabled';
+                                }
+                                else {
+                                    if(in_array(old('role'), [role('admin'), role('manager')])) $disabled_selected = 'disabled';
+                                }
+                            @endphp
+                            <div class="form-group col-md-12">
+                                <label>Jabatan <span class="text-danger">*</span></label>
+                                <select name="position_id" class="form-control {{ $errors->has('position_id') ? 'is-invalid' : '' }}" id="position" {{ $disabled_selected }}>
+                                @if(Auth::user()->role == role('super-admin'))
+                                    @if(old('position_id') != null || old('group_id') != null)
+                                        <option value="" selected>--Pilih--</option>
+                                        @foreach(\App\Models\Group::find(old('group_id'))->positions as $position)
+                                            <option value="{{ $position->id }}" {{ old('position_id') == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                                        @endforeach
+                                    @else
+                                        <option value="" selected>--Pilih--</option>
+                                    @endif
+                                @else
+                                    <option value="" selected>--Pilih--</option>
+                                    @foreach(\App\Models\Group::find(Auth::user()->group_id)->positions as $position)
+                                    <option value="{{ $position->id }}" {{ old('position_id') == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                                    @endforeach
+                                @endif
+                                </select>
+                                @if($errors->has('position_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('position_id')) }}</div>
+                                @endif
+                            </div>
+                            <div class="form-group col-md-12">
                                 <label>Nama Kategori <span class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name') }}">
                                 @if($errors->has('name'))
@@ -41,20 +92,6 @@
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('type_id')) }}</div>
                                 @endif
                             </div>
-                            @if(Auth::user()->role == role('super-admin'))
-                            <div class="form-group col-md-12">
-                                <label>Grup <span class="text-danger">*</span></label>
-                                <select name="group_id" class="form-control {{ $errors->has('group_id') ? 'is-invalid' : '' }}">
-                                    <option value="" disabled selected>--Pilih--</option>
-                                    @foreach($groups as $group)
-                                    <option value="{{ $group->id }}" {{ old('group_id') == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
-                                    @endforeach
-                                </select>
-                                @if($errors->has('group_id'))
-                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('group_id')) }}</div>
-                                @endif
-                            </div>
-                            @endif
                         </div>
                     </div>
                     <div class="tile-footer"><button class="btn btn-primary icon-btn" type="submit"><i class="fa fa-save mr-2"></i>Simpan</button></div>
@@ -63,5 +100,40 @@
         </div>
     </div>
 </main>
+
+@endsection
+
+@section('js')
+
+<script type="text/javascript">
+    // Change Group
+    $(document).on("change", "#group", function() {
+        var group = $(this).val();
+        $.ajax({
+            type: "get",
+            url: "{{ route('api.office.index') }}",
+            data: {group: group},
+            success: function(result){
+                var html = '<option value="" selected>--Pilih--</option>';
+                $(result).each(function(key,value){
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#office").html(html).removeAttr("disabled");
+            }
+        });
+        $.ajax({
+            type: 'get',
+            url: "{{ route('api.position.index') }}",
+            data: {group: group},
+            success: function(result){
+                var html = '<option value="" selected>--Pilih--</option>';
+                $(result).each(function(key,value){
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#position").html(html).removeAttr("disabled");
+            }
+        });
+    });
+</script>
 
 @endsection

@@ -35,7 +35,7 @@
                             <thead>
                                 <tr>
                                     <th width="20"></th>
-                                    <th>Nama Kantor</th>
+                                    <th>Nama</th>
                                     <th width="80">Karyawan</th>
                                     <th width="150">Grup</th>
                                     <th width="40">Opsi</th>

@@ -80,7 +80,7 @@ class UserController extends Controller
         if(count($users) > 0 && $request->query('role') == 'member') {
             foreach($users as $key=>$user) {
                 // Set categories
-                $categories = SalaryCategory::where('group_id','=',$user->group_id)->get();
+                $categories = SalaryCategory::where('group_id','=',$user->group_id)->where('position_id','=',$user->position_id)->get();
 
                 // Set the period by month
                 $users[$key]->period = abs(Date::diff($user->start_date, date('Y-m').'-24')['days']) / 30;
@@ -91,10 +91,10 @@ class UserController extends Controller
                     if($category->type_id == 1) {
                         $check = $user->indicators()->where('category_id','=',$category->id)->first();
                         $value = $check ? $check->value : 0;
-                        array_push($salaries, Salary::getAmountByRange($value, $user->group_id, $category->name));
+                        array_push($salaries, Salary::getAmountByRange($value, $user->group_id, $category->id));
                     }
                     if($category->type_id == 2)
-                        array_push($salaries, Salary::getAmountByRange($users[$key]->period, $user->group_id, $category->name));
+                        array_push($salaries, Salary::getAmountByRange($users[$key]->period, $user->group_id, $category->id));
                 }
 
                 $users[$key]->salaries = $salaries;
