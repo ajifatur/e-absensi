@@ -44,18 +44,37 @@
                         </div>
                         @php
                             $disabled_selected = '';
-                            if(Auth::user()->role == role('super-admin')) {
-                                if(old('group_id') == null) $disabled_selected = 'disabled';
-                                elseif(in_array(old('role'), [role('admin'), role('manager')])) $disabled_selected = 'disabled';
-                            }
-                            else {
-                                if(in_array(old('role'), [role('admin'), role('manager')])) $disabled_selected = 'disabled';
-                            }
+                            if(Auth::user()->role == role('super-admin') && old('group_id') == null) $disabled_selected = 'disabled';
                         @endphp
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Kantor <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <select name="office_id" class="form-control {{ $errors->has('office_id') ? 'is-invalid' : '' }}" id="office" {{ $disabled_selected }}>
+                                @if(Auth::user()->role == role('super-admin'))
+                                    @if(old('office_id') != null || old('group_id') != null)
+                                        <option value="" selected>--Pilih--</option>
+                                        @foreach(\App\Models\Group::find(old('group_id'))->offices as $office)
+                                            <option value="{{ $office->id }}" {{ old('office_id') == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
+                                        @endforeach
+                                    @else
+                                        <option value="" selected>--Pilih--</option>
+                                    @endif
+                                @else
+                                    <option value="" selected>--Pilih--</option>
+                                    @foreach(\App\Models\Group::find(Auth::user()->group_id)->offices as $office)
+                                    <option value="{{ $office->id }}" {{ old('office_id') == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
+                                    @endforeach
+                                @endif
+                                </select>
+                                @if($errors->has('office_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('office_id')) }}</div>
+                                @endif
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label class="col-md-3 col-lg-2 col-form-label">Karyawan <span class="text-danger">*</span></label>
                             <div class="col-md-9 col-lg-4">
-                                <select name="user_id" class="form-control {{ $errors->has('user_id') ? 'is-invalid' : '' }}" id="member" {{ $disabled_selected }}>
+                                <select name="user_id" class="form-control {{ $errors->has('user_id') ? 'is-invalid' : '' }}" id="member" disabled>
                                 @if(Auth::user()->role == role('super-admin'))
                                     @if(old('user_id') != null || old('group_id') != null)
                                         <option value="" selected>--Pilih--</option>
@@ -78,21 +97,62 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-3 col-lg-2 col-form-label">Nama <span class="text-danger">*</span></label>
-                            <div class="col-md-9 col-lg-10">
-                                <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name') }}">
-                                @if($errors->has('name'))
-                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('name')) }}</div>
+                            <label class="col-md-3 col-lg-2 col-form-label">Jam Kerja <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-4">
+                                <select name="workhour_id" class="form-control {{ $errors->has('workhour_id') ? 'is-invalid' : '' }}" id="work-hour" disabled>
+                                    <option value="" selected>--Pilih--</option>
+                                </select>
+                                @if($errors->has('workhour_id'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('workhour_id')) }}</div>
                                 @endif
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-3 col-lg-2 col-form-label">Tanggal Absen <span class="text-danger">*</span></label>
+                            <label class="col-md-3 col-lg-2 col-form-label">Tanggal Absensi <span class="text-danger">*</span></label>
                             <div class="col-md-9 col-lg-4">
                                 <input type="text" name="date" class="form-control datepicker {{ $errors->has('date') ? 'is-invalid' : '' }}" value="{{ old('date') }}" placeholder="Format: dd/mm/yyyy" autocomplete="off">
                                 @if($errors->has('date'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('date')) }}</div>
                                 @endif
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Waktu Masuk <span class="text-danger">*</span></label>
+                            <div class="col-md-9 col-lg-10">
+                                <div class="form-row">
+                                    <div class="col-lg-5">
+                                        <input type="text" name="entry_at[0]" class="form-control datepicker {{ $errors->has('entry_at.0') ? 'is-invalid' : '' }}" value="{{ old('entry_at.0') }}" placeholder="Format: dd/mm/yyyy" autocomplete="off">
+                                        @if($errors->has('entry_at.0'))
+                                        <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('entry_at.0')) }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-lg-5 mt-2 mt-lg-0">
+                                        <input type="text" name="entry_at[1]" class="form-control clockpicker {{ $errors->has('entry_at.1') ? 'is-invalid' : '' }}" value="{{ old('entry_at.1') }}" autocomplete="off">
+                                        @if($errors->has('entry_at.1'))
+                                        <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('entry_at.1')) }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Jam Keluar</label>
+                            <div class="col-md-9 col-lg-10">
+                                <div class="form-row">
+                                    <div class="col-lg-5">
+                                        <input type="text" name="exit_at[0]" class="form-control datepicker {{ $errors->has('exit_at.0') ? 'is-invalid' : '' }}" value="{{ old('exit_at.0') }}" placeholder="Format: dd/mm/yyyy" autocomplete="off">
+                                        @if($errors->has('exit_at.0'))
+                                        <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('exit_at.0')) }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-lg-5 mt-2 mt-lg-0">
+                                        <input type="text" name="exit_at[1]" class="form-control clockpicker {{ $errors->has('exit_at.1') ? 'is-invalid' : '' }}" value="{{ old('exit_at.1') }}" autocomplete="off">
+                                        @if($errors->has('exit_at.1'))
+                                        <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('exit_at.1')) }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="text-muted">Kosongi saja jika belum melakukan absen keluar.</div>
                             </div>
                         </div>
                     </div>
@@ -107,6 +167,7 @@
 
 @section('js')
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.js" integrity="sha512-x0qixPCOQbS3xAQw8BL9qjhAh185N7JSw39hzE/ff71BXg7P1fkynTqcLYMlNmwRDtgdoYgURIvos+NJ6g0rNg==" crossorigin="anonymous"></script>
 <script type="text/javascript" src="{{ asset('templates/vali-admin/js/plugins/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
     // Input Datepicker
@@ -116,13 +177,38 @@
         todayHighlight: true
     });
 
+    // Clockpicker
+    $(".clockpicker").clockpicker({
+        autoclose: true
+    });
+
     // Change Group
     $(document).on("change", "#group", function() {
         var group = $(this).val();
         $.ajax({
             type: "get",
-            url: "{{ route('api.user.index') }}",
+            url: "{{ route('api.office.index') }}",
             data: {group: group},
+            success: function(result){
+                var html = '<option value="" selected>--Pilih--</option>';
+                $(result).each(function(key,value){
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#office").html(html).removeAttr("disabled");
+                $("#member").val(null).attr("disabled","disabled");
+                $("#work-hour").val(null).attr("disabled","disabled");
+            }
+        });
+    });
+
+    // Change Office
+    $(document).on("change", "#office", function() {
+        var office = $(this).val();
+        var group = $("#group").val();
+        $.ajax({
+            type: "get",
+            url: "{{ route('api.user.index') }}",
+            data: {group: group, office: office},
             success: function(result){
                 var html = '<option value="" selected>--Pilih--</option>';
                 $(result).each(function(key,value){
@@ -132,6 +218,29 @@
             }
         });
     });
+
+    // Change User
+    $(document).on("change", "#member", function() {
+        var user = $(this).val();
+        $.ajax({
+            type: "get",
+            url: "{{ route('api.work-hour.index') }}",
+            data: {user: user},
+            success: function(result){
+                var html = '<option value="" selected>--Pilih--</option>';
+                $(result).each(function(key,value){
+                    html += '<option value="' + value.id + '">' + value.start_at.substr(0,5) + ' - ' + value.end_at.substr(0,5) + ' (' + value.name + ')' + '</option>';
+                });
+                $("#work-hour").html(html).removeAttr("disabled");
+            }
+        });
+    });
 </script>
+
+@endsection
+
+@section('css')
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/jquery-clockpicker.min.css" integrity="sha512-Dh9t60z8OKsbnVsKAY3RcL2otV6FZ8fbZjBrFENxFK5H088Cdf0UVQaPoZd/E0QIccxqRxaSakNlmONJfiDX3g==" crossorigin="anonymous" />
 
 @endsection

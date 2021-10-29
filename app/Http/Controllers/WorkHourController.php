@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\WorkHour;
 use App\Models\Group;
+use App\Models\User;
 
 class WorkHourController extends Controller
 {
@@ -19,6 +20,15 @@ class WorkHourController extends Controller
      */
     public function index(Request $request)
     {
+        if($request->ajax()) {
+            if($request->query('user') != null) {
+                $user = User::find($request->query('user'));
+                $work_hours = WorkHour::where('office_id','=',$user->office_id)->where('position_id','=',$user->position_id)->get();
+
+                return response()->json($work_hours);
+            }
+        }
+
         // Get work hours
         if(Auth::user()->role == role('super-admin'))
             $work_hours = WorkHour::all();

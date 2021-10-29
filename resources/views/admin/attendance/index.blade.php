@@ -129,7 +129,7 @@
                                     </td>
                                     <td align="center">
                                         <div class="btn-group">
-                                            <a href="#" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
+                                            <a href="{{ route('admin.attendance.edit', ['id' => $attendance->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                                             <a href="#" class="btn btn-danger btn-sm btn-delete" data-id="{{ $attendance->id }}" title="Hapus"><i class="fa fa-trash"></i></a>
                                         </div>
                                     </td>

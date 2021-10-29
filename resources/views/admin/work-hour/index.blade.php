@@ -61,12 +61,10 @@
                                                 <a href="{{ route('admin.office.detail', ['id' => $work_hour->position->id]) }}">{{ $work_hour->position->name }}</a>
                                             @endif
                                         </td>
-                                        <td>{{ $work_hour->quota }}</td>
+                                        <td align="right">{{ number_format($work_hour->quota,0,',',',') }}</td>
                                         <td>
                                             @if($work_hour->group)
                                                 <a href="{{ route('admin.group.detail', ['id' => $work_hour->group->id]) }}">{{ $work_hour->group->name }}</a>
-                                            @else
-                                                -
                                             @endif
                                         </td>
                                         <td>

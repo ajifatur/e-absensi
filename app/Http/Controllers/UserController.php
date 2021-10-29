@@ -27,8 +27,14 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()) {
-            // Get users by the group
-            $users = User::where('group_id','=',$request->query('group'))->where('role','=',role('member'))->where('end_date','=',null)->orderBy('name','asc')->get();
+            if($request->query('office') == null) {
+                // Get users by the group
+                $users = User::where('group_id','=',$request->query('group'))->where('role','=',role('member'))->where('end_date','=',null)->orderBy('name','asc')->get();
+            }
+            else {
+                // Get users by the group and office
+                $users = User::where('group_id','=',$request->query('group'))->where('office_id','=',$request->query('office'))->where('role','=',role('member'))->where('end_date','=',null)->orderBy('name','asc')->get();
+            }
 
             // Return
             return response()->json($users);

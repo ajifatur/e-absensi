@@ -90,6 +90,112 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        // Validation
+        $validator = Validator::make($request->all(), [
+            'group_id' => Auth::user()->role == role('super-admin') ? 'required' : '',
+            'office_id' => 'required',
+            'user_id' => 'required',
+            'workhour_id' => 'required',
+            'date' => 'required',
+            'entry_at.*' => 'required',
+        ]);
+        
+        // Check errors
+        if($validator->fails()){
+            // Back to form page with validation error messages
+            return redirect()->back()->withErrors($validator->errors())->withInput();
+        }
+        else{
+            // Get the work hour
+            $work_hour = WorkHour::find($request->workhour_id);
+
+            // Save the attendance
+            $attendance = new Attendance;
+            $attendance->office_id = $request->office_id;
+            $attendance->user_id = $request->user_id;
+            $attendance->workhour_id = $request->workhour_id;
+            $attendance->start_at = $work_hour->start_at;
+            $attendance->end_at = $work_hour->end_at;
+            $attendance->date = Date::change($request->date);
+            $attendance->entry_at = Date::change($request->entry_at[0]).' '.$request->entry_at[1].':00';
+            $attendance->exit_at = $request->exit_at[0] && $request->exit_at[1] != '' ? Date::change($request->exit_at[0]).' '.$request->exit_at[1].':00' : null;
+            $attendance->entry_status = 0;
+            $attendance->exit_status = 0;
+            $attendance->save();
+
+            // Redirect
+            return redirect()->route('admin.attendance.index')->with(['message' => 'Berhasil menambah data.']);
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        // Get the attendance
+        $attendance = Attendance::findOrFail($id);
+
+        // Get work hours
+        $work_hours = WorkHour::where('office_id','=',$attendance->user->office_id)->where('position_id','=',$attendance->user->position_id)->get();
+
+        // View
+        return view('admin/attendance/edit', [
+            'attendance' => $attendance,
+            'work_hours' => $work_hours,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        // Validation
+        $validator = Validator::make($request->all(), [
+            'workhour_id' => 'required',
+            'date' => 'required',
+            'entry_at.*' => 'required',
+        ]);
+        
+        // Check errors
+        if($validator->fails()){
+            // Back to form page with validation error messages
+            return redirect()->back()->withErrors($validator->errors())->withInput();
+        }
+        else{
+            // Get the work hour
+            $work_hour = WorkHour::find($request->workhour_id);
+
+            // Update the attendance
+            $attendance = Attendance::find($request->id);
+            $attendance->workhour_id = $request->workhour_id;
+            $attendance->start_at = $work_hour->start_at;
+            $attendance->end_at = $work_hour->end_at;
+            $attendance->date = Date::change($request->date);
+            $attendance->entry_at = Date::change($request->entry_at[0]).' '.$request->entry_at[1].':00';
+            $attendance->exit_at = $request->exit_at[0] && $request->exit_at[1] != '' ? Date::change($request->exit_at[0]).' '.$request->exit_at[1].':00' : null;
+            $attendance->save();
+
+            // Redirect
+            return redirect()->route('admin.attendance.index')->with(['message' => 'Berhasil mengupdate data.']);
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request  $request
