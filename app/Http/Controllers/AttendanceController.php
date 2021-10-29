@@ -120,13 +120,22 @@ class AttendanceController extends Controller
 		
 		// Entry at
 		$entry_at = date('Y-m-d H:i:s');
-		
-		// Start time and end time (if start hour is 00:00:00)
-		$start_time = new \DateTime(date('Y-m-d', strtotime($entry_at)).' 23:00:00');
-		$end_time = new \DateTime(date('Y-m-d', strtotime($entry_at)).' 23:59:59');
-		
-		// Attendance date
-		$date = ($work_hour->start_at == '00:00:00' && strtotime($entry_at) >= strtotime($start_time->format('Y-m-d H:i:s')) && strtotime($entry_at) <= strtotime($waktu_akhir->format('Y-m-d H:i:s'))) ? date('Y-m-d', strtotime("+1 day")) : date('Y-m-d');
+        
+        // If start_at and end_at are still at the same day
+        if(strtotime($work_hour->start_at) <= strtotime($work_hour->end_at)) {
+            $date = date('Y-m-d', strtotime($entry_at));
+        }
+        // If start_at and end_at are at the different day
+        else {
+            // If the user attends at 1 hour before work time
+            if(date('G', strtotime($entry_at)) >= (date('G', strtotime($work_hour->start_at)) - 1)) {
+                $date = date('Y-m-d', strtotime("+1 day"));
+            }
+            // If the user attends at 1 hour after work time
+            elseif(date('G', strtotime($entry_at)) <= (date('G', strtotime($work_hour->end_at)) + 1)) {
+                $date = date('Y-m-d', strtotime($entry_at));
+            }
+        }
 
         // Entry absence
         $attendance = new Attendance;

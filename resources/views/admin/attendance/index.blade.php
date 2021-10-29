@@ -66,10 +66,10 @@
                 </div>
                 @endif
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="table">
+                    <table class="table table-sm table-hover table-bordered" id="table">
                         <thead>
                             <tr>
-                                <th width="20"><input type="checkbox"></th>
+                                <th width="20"></th>
                                 <th>Identitas User</th>
                                 <th width="120">Jam Kerja</th>
                                 <th width="80">Tanggal</th>
@@ -89,24 +89,32 @@
                                         <br>
                                         <small class="text-muted">{{ $attendance->user->office->name }}</small>
                                     </td>
-                                    <td>{{ $attendance->workhour ? $attendance->workhour->name : '-' }}<br><small class="text-muted">{{ date('H:i', strtotime($attendance->start_at)) }} - {{ date('H:i', strtotime($attendance->end_at)) }}</small></td>
+                                    <td>
+                                        {{ $attendance->workhour ? $attendance->workhour->name : '-' }}
+                                        <br>
+                                        <small class="text-muted">{{ date('H:i', strtotime($attendance->start_at)) }} - {{ date('H:i', strtotime($attendance->end_at)) }}</small>
+                                    </td>
                                     <td>
                                         <span class="d-none">{{ date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at }}</span>
-                                        {{ date('d/m/Y', strtotime($attendance->entry_at)) }}
+                                        {{ date('d/m/Y', strtotime($attendance->date)) }}
                                     </td>
                                     <td>
                                         <i class="fa fa-clock-o mr-2"></i>{{ date('H:i', strtotime($attendance->entry_at)) }} WIB
-                                        @if(strtotime($attendance->entry_at) < strtotime($attendance->date.' '.$attendance->start_at) + 60)
+                                        <br>
+                                        <small class="text-muted"><i class="fa fa-calendar mr-2"></i>{{ date('d/m/Y', strtotime($attendance->entry_at)) }}</small>
+                                        @if(strtotime($attendance->entry_at) < strtotime(date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at) + 60)
                                             <br>
                                             <strong class="text-success"><i class="fa fa-check-square-o mr-2"></i>Masuk sesuai dengan waktunya.</strong>
                                         @else
                                             <br>
-                                            <strong class="text-danger"><i class="fa fa-warning mr-2"></i>Terlambat {{ time_to_string(abs(strtotime($attendance->date.' '.$attendance->start_at) - strtotime($attendance->entry_at))) }}.</strong>
+                                            <strong class="text-danger"><i class="fa fa-warning mr-2"></i>Terlambat {{ time_to_string(abs(strtotime(date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at) - strtotime($attendance->entry_at))) }}.</strong>
                                         @endif
                                     </td>
                                     <td>
                                         @if($attendance->exit_at != null)
                                             <i class="fa fa-clock-o mr-2"></i>{{ date('H:i', strtotime($attendance->exit_at)) }} WIB
+                                            <br>
+                                            <small class="text-muted"><i class="fa fa-calendar mr-2"></i>{{ date('d/m/Y', strtotime($attendance->exit_at)) }}</small>
                                             @php $attendance->end_at = $attendance->end_at == '00:00:00' ? '23:59:59' : $attendance->end_at @endphp
                                             @if(strtotime($attendance->exit_at) > strtotime($attendance->date.' '.$attendance->end_at))
                                                 <br>
@@ -121,7 +129,8 @@
                                     </td>
                                     <td align="center">
                                         <div class="btn-group">
-                                            <a href="#" class="btn btn-danger btn-sm {{ Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin') ? 'btn-delete' : '' }}" data-id="{{ $attendance->id }}" style="{{ Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin') ? '' : 'cursor: not-allowed' }}" title="Hapus"><i class="fa fa-trash"></i></a>
+                                            <a href="#" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
+                                            <a href="#" class="btn btn-danger btn-sm btn-delete" data-id="{{ $attendance->id }}" title="Hapus"><i class="fa fa-trash"></i></a>
                                         </div>
                                     </td>
                                 </tr>

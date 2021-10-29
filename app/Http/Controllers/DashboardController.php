@@ -35,30 +35,27 @@ class DashboardController extends Controller
                     foreach($work_hours as $key=>$work_hour) {
                         // Get the entry time
                         $entry_at = date('Y-m-d H:i:s');
-                        
-                        // Set start date and end date
-                        // if(date('G', strtotime($entry_at)) == 23 && date('G', strtotime($work_hour->start_at)) == 0){
-                        //     $start_date = date('Y-m-d', strtotime("+1 day"));
-                        //     $end_date = date('Y-m-d', strtotime("+1 day"));
-                        // }
-                        // elseif(date('G', strtotime($entry_at)) == 23 && date('G', strtotime($work_hour->end_at)) == 0){
-                        //     $start_date = date('Y-m-d', strtotime($entry_at));
-                        //     $end_date = date('Y-m-d', strtotime("+1 day"));
-                        // }
-                        // else{
-                        //     $start_date = date('Y-m-d', strtotime($entry_at));
-                        //     $end_date = date('Y-m-d', strtotime($entry_at));
-                        // }
 
+                        // If start_at and end_at are still at the same day
                         if(strtotime($work_hour->start_at) <= strtotime($work_hour->end_at)) {
                             $start_date = date('Y-m-d', strtotime($entry_at));
                             $end_date = date('Y-m-d', strtotime($entry_at));
                         }
+                        // If start_at and end_at are at the different day
                         else {
-                            $start_date = date('Y-m-d', strtotime($entry_at));
-                            $end_date = date('Y-m-d', strtotime("+1 day"));
+                            // If the user login at 1 hour before work time
+                            if(date('G', strtotime($entry_at)) >= (date('G', strtotime($work_hour->start_at)) - 1)) {
+                                $start_date = date('Y-m-d', strtotime($entry_at));
+                                $end_date = date('Y-m-d', strtotime("+1 day"));
+                            }
+                            // If the user login at 1 hour after work time
+                            elseif(date('G', strtotime($entry_at)) <= (date('G', strtotime($work_hour->end_at)) + 1)) {
+                                $start_date = date('Y-m-d', strtotime("-1 day"));
+                                $end_date = date('Y-m-d', strtotime($entry_at));
+                            }
                         }
 
+                        // Set start time and end time
                         $start_time = new \DateTime($start_date.' '.$work_hour->start_at);
                         $end_time = new \DateTime($end_date.' '.$work_hour->end_at);
 
