@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Ajifatur\Helpers\Date;
 use App\Models\Attendance;
+use App\Models\User;
 use App\Models\Group;
 use App\Models\WorkHour;
 
@@ -69,6 +70,86 @@ class AttendanceController extends Controller
             // View
             return view('admin/attendance/index', [
                 'attendances' => $attendances,
+            ]);
+        }
+    }
+
+    /**
+     * Display a listing of the resource (summary).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function summary(Request $request)
+    {
+        if(Auth::user()->role == role('super-admin')){
+            // Set default date
+            $dt1 = date('m') > 1 ? date('Y-m-d', strtotime(date('Y').'-'.(date('m')-1).'-24')) : date('Y-m-d', strtotime((date('Y')-1).'-12-24'));
+            $dt2 = date('Y-m-d', strtotime(date('Y').'-'.date('m').'-23'));
+
+            // Set params
+            $group = $request->query('group') != null ? $request->query('group') : 0;
+            $office = $request->query('office') != null ? $request->query('office') : 0;
+            $t1 = $request->query('t1') != null ? Date::change($request->query('t1')) : $dt1;
+            $t2 = $request->query('t2') != null ? Date::change($request->query('t2')) : $dt2;
+
+            // Get attendances
+            if($group != 0 && $office != 0)
+                $users = User::where('role','=',role('member'))->where('group_id','=',$group)->where('office_id','=',$office)->get();
+            elseif($group != 0 && $office == 0)
+                $users = User::where('role','=',role('member'))->where('group_id','=',$group)->get();
+            else
+                $users = User::where('role','=',role('member'))->get();
+
+            // Set attendances
+            if(count($users) > 0) {
+                foreach($users as $key=>$user) {
+                    $attendance = Attendance::where('user_id','=',$user->id)->where('date','>=',$dt1)->where('date','<=',$dt2)->count();
+                    $users[$key]->attendance = $attendance;
+                }
+            }
+
+            // Get groups
+            $groups = Group::all();
+
+            // View
+            return view('admin/attendance/summary', [
+                'groups' => $groups,
+                'users' => $users,
+                't1' => $t1,
+                't2' => $t2,
+            ]);
+        }
+        elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager')) {
+            // Set default date
+            $dt1 = date('m') > 1 ? date('Y-m-d', strtotime(date('Y').'-'.(date('m')-1).'-24')) : date('Y-m-d', strtotime((date('Y')-1).'-12-24'));
+            $dt2 = date('Y-m-d', strtotime(date('Y').'-'.date('m').'-23'));
+
+            // Set params
+            $group = Auth::user()->group_id;
+            $office = $request->query('office') != null ? $request->query('office') : 0;
+            $t1 = $request->query('t1') != null ? Date::change($request->query('t1')) : $dt1;
+            $t2 = $request->query('t2') != null ? Date::change($request->query('t2')) : $dt2;
+
+            // Get users
+            if($office != 0)
+                $users = User::where('role','=',role('member'))->where('group_id','=',$group)->where('office_id','=',$office)->get();
+            else
+                $users = User::where('role','=',role('member'))->where('group_id','=',$group)->get();
+
+            // Set attendances
+            if(count($users) > 0) {
+                foreach($users as $key=>$user) {
+                    $attendance = Attendance::where('user_id','=',$user->id)->where('date','>=',$dt1)->where('date','<=',$dt2)->count();
+                    $users[$key]->attendance = $attendance;
+                }
+            }
+
+            // View
+            return view('admin/attendance/summary', [
+                'users' => $users,
+                't1' => $t1,
+                't2' => $t2,
             ]);
         }
     }

@@ -21,7 +21,7 @@
                 <div class="tile-body">
                     <form id="form-tanggal" class="form-inline" method="get" action="">
                         @if(Auth::user()->role == role('super-admin'))
-                        <select name="group" id="grup" class="form-control form-control-sm mb-2 mr-sm-2">
+                        <select name="group" id="group" class="form-control form-control-sm mb-2 mr-sm-2">
                             <option value="0">Semua Grup</option>
                             @foreach($groups as $group)
                             <option value="{{ $group->id }}" {{ isset($_GET) && isset($_GET['group']) && $_GET['group'] == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
@@ -44,7 +44,7 @@
                         </select>
                         <input type="text" id="t1" name="t1" class="form-control form-control-sm mb-2 mr-sm-2 input-tanggal" value="{{ isset($_GET) && isset($_GET['t1']) ? $_GET['t1'] : date('d/m/Y') }}" placeholder="Dari Tanggal" title="Dari Tanggal">
                         <input type="text" id="t2" name="t2" class="form-control form-control-sm mb-2 mr-sm-2 input-tanggal" value="{{ isset($_GET) && isset($_GET['t2']) ? $_GET['t2'] : date('d/m/Y') }}" placeholder="Sampai Tanggal" title="Sampai Tanggal">
-                        <button type="submit" class="btn btn-sm btn-primary btn-submit mb-2">Submit</button>
+                        <button type="submit" class="btn btn-sm btn-primary btn-submit mb-2">Filter</button>
                     </form>
                 </div>
             </div>
@@ -167,8 +167,8 @@
         todayHighlight: true
     });
 
-    // Change Grup
-    $(document).on("change", "#grup", function(){
+    // Change Group
+    $(document).on("change", "#group", function(){
         var group = $(this).val();
         $.ajax({
             type: 'get',
@@ -184,7 +184,7 @@
         });
     });
 
-    // Change Tanggal
+    // Change Date
     $(document).on("change", "#t1, #t2", function(){
         var t1 = $("#t1").val();
         var t2 = $("#t2").val();
