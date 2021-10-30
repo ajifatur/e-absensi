@@ -32,7 +32,7 @@
                                 <select name="category_id" class="form-control {{ $errors->has('category_id') ? 'is-invalid' : '' }}" id="category">
                                     <option value="" selected>--Pilih--</option>
                                     @foreach(\App\Models\Group::find($salary_indicator->group_id)->categories as $category)
-                                    <option value="{{ $category->id }}" {{ $salary_indicator->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->position->name }})</option>
+                                    <option value="{{ $category->id }}" {{ $salary_indicator->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->position ? $category->position->name : '-' }})</option>
                                     @endforeach
                                 </select>
                                 @if($errors->has('category_id'))

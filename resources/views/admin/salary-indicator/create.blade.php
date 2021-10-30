@@ -67,7 +67,7 @@
                                 @else
                                     <option value="" selected>--Pilih--</option>
                                     @foreach(\App\Models\Group::find(Auth::user()->group_id)->categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->position->name }})</option>
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->position ? $category->position->name : '-' }})</option>
                                     @endforeach
                                 @endif
                                 </select>
