@@ -95,11 +95,11 @@ class AttendanceController extends Controller
 
             // Get attendances
             if($group != 0 && $office != 0)
-                $users = User::where('role','=',role('member'))->where('group_id','=',$group)->where('office_id','=',$office)->get();
+                $users = User::where('role','=',role('member'))->where('end_date','=',null)->where('group_id','=',$group)->where('office_id','=',$office)->get();
             elseif($group != 0 && $office == 0)
-                $users = User::where('role','=',role('member'))->where('group_id','=',$group)->get();
+                $users = User::where('role','=',role('member'))->where('end_date','=',null)->where('group_id','=',$group)->get();
             else
-                $users = User::where('role','=',role('member'))->get();
+                $users = User::where('role','=',role('member'))->where('end_date','=',null)->get();
 
             // Set attendances
             if(count($users) > 0) {
@@ -143,9 +143,9 @@ class AttendanceController extends Controller
 
             // Get users
             if($office != 0)
-                $users = User::where('role','=',role('member'))->where('group_id','=',$group)->where('office_id','=',$office)->get();
+                $users = User::where('role','=',role('member'))->where('end_date','=',null)->where('group_id','=',$group)->where('office_id','=',$office)->get();
             else
-                $users = User::where('role','=',role('member'))->where('group_id','=',$group)->get();
+                $users = User::where('role','=',role('member'))->where('end_date','=',null)->where('group_id','=',$group)->get();
 
             // Set attendances
             if(count($users) > 0) {
