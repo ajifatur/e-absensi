@@ -19,6 +19,8 @@
                 "processing": "Memproses data..."
             },
             // "fnDrawCallback": configFnDrawCallback,
+            "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "Semua"]],
+            "pageLength": 25,
             columnDefs: [
                 {orderable: false, targets: 0},
                 {orderable: false, targets: -1},

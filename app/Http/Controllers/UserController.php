@@ -353,7 +353,10 @@ class UserController extends Controller
             }
 
             // Redirect
-            return redirect()->route('admin.user.index', ['role' => $role->code])->with(['message' => 'Berhasil mengupdate data.']);
+            if(Auth::user()->role == role('super-admin'))
+                return redirect()->route('admin.user.index', ['role' => $role->code, 'group' => $user->group_id, 'office' => $user->office_id, 'position' => $user->position_id])->with(['message' => 'Berhasil mengupdate data.']);
+            elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
+                return redirect()->route('admin.user.index', ['role' => $role->code, 'office' => $user->office_id, 'position' => $user->position_id])->with(['message' => 'Berhasil mengupdate data.']);
         }
     }
 
