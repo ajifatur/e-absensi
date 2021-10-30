@@ -38,6 +38,7 @@
                                     <th width="20"></th>
                                     <th>Kategori</th>
                                     <th width="100">Tipe</th>
+                                    <th width="80">Indikator</th>
                                     <th width="150">Jabatan</th>
                                     <th width="150">Grup</th>
                                     <th width="40">Opsi</th>
@@ -53,6 +54,7 @@
                                             @elseif($category->type_id == 2) Masa Kerja (Bulan)
                                             @endif
                                         </td>
+                                        <td>{{ number_format($category->indicators()->count(),0,',',',') }}</td>
                                         <td>
                                             @if($category->position)
                                                 <a href="{{ route('admin.position.detail', ['id' => $category->position->id]) }}">{{ $category->position->name }}</a>
@@ -65,6 +67,7 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
+                                                <a href="{{ route('admin.salary-category.set', ['id' => $category->id]) }}" class="btn btn-info btn-sm" title="Atur Indikator"><i class="fa fa-cog"></i></a>
                                                 <a href="{{ route('admin.salary-category.edit', ['id' => $category->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                                                 <a href="#" class="btn btn-danger btn-sm btn-delete" data-id="{{ $category->id }}" title="Hapus"><i class="fa fa-trash"></i></a>
                                             </div>

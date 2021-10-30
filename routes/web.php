@@ -81,15 +81,17 @@ Route::group(['middleware' => ['admin']], function(){
 	Route::post('/admin/salary-category/store', 'SalaryCategoryController@store')->name('admin.salary-category.store');
 	Route::get('/admin/salary-category/edit/{id}', 'SalaryCategoryController@edit')->name('admin.salary-category.edit');
 	Route::post('/admin/salary-category/update', 'SalaryCategoryController@update')->name('admin.salary-category.update');
+	Route::get('/admin/salary-category/set/{id}', 'SalaryCategoryController@set')->name('admin.salary-category.set');
+	Route::post('/admin/salary-category/update-indicator', 'SalaryCategoryController@updateIndicator')->name('admin.salary-category.update-indicator');
 	Route::post('/admin/salary-category/delete', 'SalaryCategoryController@delete')->name('admin.salary-category.delete');
 
-	// Salary Indicator
-	Route::get('/admin/salary-indicator', 'SalaryIndicatorController@index')->name('admin.salary-indicator.index');
-	Route::get('/admin/salary-indicator/create', 'SalaryIndicatorController@create')->name('admin.salary-indicator.create');
-	Route::post('/admin/salary-indicator/store', 'SalaryIndicatorController@store')->name('admin.salary-indicator.store');
-	Route::get('/admin/salary-indicator/edit/{id}', 'SalaryIndicatorController@edit')->name('admin.salary-indicator.edit');
-	Route::post('/admin/salary-indicator/update', 'SalaryIndicatorController@update')->name('admin.salary-indicator.update');
-	Route::post('/admin/salary-indicator/delete', 'SalaryIndicatorController@delete')->name('admin.salary-indicator.delete');
+	// // Salary Indicator
+	// Route::get('/admin/salary-indicator', 'SalaryIndicatorController@index')->name('admin.salary-indicator.index');
+	// Route::get('/admin/salary-indicator/create', 'SalaryIndicatorController@create')->name('admin.salary-indicator.create');
+	// Route::post('/admin/salary-indicator/store', 'SalaryIndicatorController@store')->name('admin.salary-indicator.store');
+	// Route::get('/admin/salary-indicator/edit/{id}', 'SalaryIndicatorController@edit')->name('admin.salary-indicator.edit');
+	// Route::post('/admin/salary-indicator/update', 'SalaryIndicatorController@update')->name('admin.salary-indicator.update');
+	// Route::post('/admin/salary-indicator/delete', 'SalaryIndicatorController@delete')->name('admin.salary-indicator.delete');
 });
 
 // Member

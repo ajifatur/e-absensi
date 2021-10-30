@@ -6,6 +6,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\SalaryCategory;
+use App\Models\SalaryIndicator;
 use App\Models\Group;
 
 class SalaryCategoryController extends Controller
@@ -141,6 +142,60 @@ class SalaryCategoryController extends Controller
             // Redirect
             return redirect()->route('admin.salary-category.index')->with(['message' => 'Berhasil mengupdate data.']);
         }
+    }
+
+    /**
+     * Show the form for setting the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function set($id)
+    {
+        // Get the salary category
+        $salary_category = SalaryCategory::findOrFail($id);
+
+        // View
+        return view('admin/salary-category/set', [
+            'salary_category' => $salary_category,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateIndicator(Request $request)
+    {
+        // Get the salary category
+        $salary_category = SalaryCategory::findOrFail($request->id);
+
+        // Compare and delete salary indicators
+        $array_diff = array_diff($salary_category->indicators()->pluck('id')->toArray(), array_filter($request->ids));
+        if(count($array_diff) > 0) {
+            foreach($array_diff as $idx) {
+                $indicatorx = SalaryIndicator::find($idx);
+                if($indicatorx) $indicatorx->delete();
+            }
+        }
+        
+        // Save or update salary indicators
+        foreach($request->ids as $key=>$id) {
+            $indicator = SalaryIndicator::find($id);
+            if(!$indicator) $indicator = new SalaryIndicator;
+
+            $indicator->group_id = $salary_category->group_id;
+            $indicator->category_id = $salary_category->id;
+            $indicator->lower_range = str_replace(',', '.', $request->lower_range[$key]);
+            $indicator->upper_range = $request->upper_range[$key] != '' ? str_replace(',', '.', $request->upper_range[$key]) : null;
+            $indicator->amount = $request->amount[$key];
+            $indicator->save();
+        }
+
+        // Redirect
+        return redirect()->route('admin.salary-category.set', ['id' => $request->id])->with(['message' => 'Berhasil mengupdate data.']);
     }
 
     /**

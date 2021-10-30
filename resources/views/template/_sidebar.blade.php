@@ -30,14 +30,7 @@
 			<li><a class="app-menu__item {{ is_int(strpos(Request::url(), route('admin.office.index'))) ? 'active' : '' }}" href="{{ route('admin.office.index') }}"><i class="app-menu__icon fa fa-home"></i><span class="app-menu__label">Kantor</span></a></li>
 			<li><a class="app-menu__item {{ is_int(strpos(Request::url(), route('admin.position.index'))) ? 'active' : '' }}" href="{{ route('admin.position.index') }}"><i class="app-menu__icon fa fa-refresh"></i><span class="app-menu__label">Jabatan</span></a></li>
 			<li><a class="app-menu__item {{ is_int(strpos(Request::url(), route('admin.work-hour.index'))) ? 'active' : '' }}" href="{{ route('admin.work-hour.index') }}"><i class="app-menu__icon fa fa-clock-o"></i><span class="app-menu__label">Jam Kerja</span></a></li>
-		@endif
-		@if(Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
-        <li class="treeview {{ is_int(strpos(Request::url(), route('admin.salary-category.index'))) || is_int(strpos(Request::url(), route('admin.salary-indicator.index'))) ? 'is-expanded' : '' }}"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-money"></i><span class="app-menu__label">Penggajian</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-			<ul class="treeview-menu">
-				<li><a class="treeview-item {{ is_int(strpos(Request::url(), route('admin.salary-category.index'))) ? 'active' : '' }}" href="{{ route('admin.salary-category.index') }}"><i class="icon fa fa-circle-o"></i> Kategori</a></li>
-				<li><a class="treeview-item {{ is_int(strpos(Request::url(), route('admin.salary-indicator.index'))) ? 'active' : '' }}" href="{{ route('admin.salary-indicator.index') }}"><i class="icon fa fa-circle-o"></i> Indikator</a></li>
-			</ul>
-        </li>
+			<li><a class="app-menu__item {{ is_int(strpos(Request::url(), route('admin.salary-category.index'))) ? 'active' : '' }}" href="{{ route('admin.salary-category.index') }}"><i class="app-menu__icon fa fa-money"></i><span class="app-menu__label">Kategori Penggajian</span></a></li>
 		@endif
 	</ul>
 </aside>
