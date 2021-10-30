@@ -24,7 +24,7 @@ class DashboardController extends Controller
         }
         elseif(Auth::user()->role == role('member')) {
             // Check whether is already absent and not exit yet
-            $is_entry = Attendance::has('workhour')->where('user_id','=',Auth::user()->id)->where('exit_at','=',null)->whereDate('entry_at','=',date('Y-m-d'))->get();
+            $is_entry = Attendance::has('workhour')->where('user_id','=',Auth::user()->id)->where('date','=',date('Y-m-d'))->orWhere('date','=',date('Y-m-d',strtotime("+1 day")))->where('exit_at','=',null)->get();
 
             // Display attendance if is already exit
             if(count($is_entry) <= 0) {

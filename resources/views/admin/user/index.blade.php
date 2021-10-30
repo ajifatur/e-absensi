@@ -15,20 +15,61 @@
             <li class="breadcrumb-item">Kelola User</li>
         </ul>
     </div>
+    @if(Request::query('role') == 'member')
+    <div class="row">
+        <div class="col-lg-auto mx-auto">
+            <div class="tile">
+                <div class="tile-body">
+                    <form id="form-filter" class="form-inline" method="get" action="">
+                        <input type="hidden" name="role" value="{{ Request::query('role') }}">
+                        @if(Auth::user()->role == role('super-admin'))
+                        <select name="group" id="group" class="form-control form-control-sm mb-2 mr-sm-2">
+                            <option value="0">Semua Grup</option>
+                            @foreach($groups as $group)
+                            <option value="{{ $group->id }}" {{ isset($_GET) && isset($_GET['group']) && $_GET['group'] == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+                            @endforeach
+                        </select>
+                        @endif
+                        <select name="office" id="office" class="form-control form-control-sm mb-2 mr-sm-2">
+                            <option value="" disabled selected>--Pilih Kantor--</option>
+                            @if(Auth::user()->role == role('super-admin'))
+                                @if(isset($_GET) && isset($_GET['group']) && $_GET['group'] != 0)
+                                    @foreach(\App\Models\Group::find($_GET['group'])->offices as $office)
+                                    <option value="{{ $office->id }}" {{ isset($_GET) && isset($_GET['office']) && $_GET['office'] == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
+                                    @endforeach
+                                @endif
+                            @elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
+                                @foreach(\App\Models\Group::find(Auth::user()->group_id)->offices as $office)
+                                <option value="{{ $office->id }}" {{ isset($_GET) && isset($_GET['office']) && $_GET['office'] == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <select name="position" id="position" class="form-control form-control-sm mb-2 mr-sm-2">
+                            <option value="" disabled selected>--Pilih Jabatan--</option>
+                            @if(Auth::user()->role == role('super-admin'))
+                                @if(isset($_GET) && isset($_GET['group']) && $_GET['group'] != 0)
+                                    @foreach(\App\Models\Group::find($_GET['group'])->positions as $position)
+                                    <option value="{{ $position->id }}" {{ isset($_GET) && isset($_GET['position']) && $_GET['position'] == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                                    @endforeach
+                                @endif
+                            @elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
+                                @foreach(\App\Models\Group::find(Auth::user()->group_id)->positions as $position)
+                                <option value="{{ $position->id }}" {{ isset($_GET) && isset($_GET['position']) && $_GET['position'] == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary btn-submit mb-2" {{ Request::query('office') != null && Request::query('position') != null ? '' : 'disabled' }}>Filter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="row">
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-title-w-btn">
-                    <div>
-                        @if($_GET['role'] == 'member')
-                        <select name="office" id="office" class="form-control form-control-sm">
-                            <option value="">Semua Kantor</option>
-                            @foreach($offices as $office)
-                            <option value="{{ $office->id }}" {{ isset($_GET['office']) && $_GET['office'] == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
-                            @endforeach
-                        </select>
-                        @endif
-                    </div>
+                    <div></div>
                     <div>
                         <a class="btn btn-sm btn-primary" href="{{ route('admin.user.create') }}"><i class="fa fa-lg fa-plus"></i> Tambah User</a>
                     </div>
@@ -43,20 +84,22 @@
                         <table class="table table-sm table-hover table-bordered" id="table">
                             <thead>
                                 <tr>
-                                    <th rowspan="{{ Request::query('role') == 'member' && count($categories) > 0 ? 2 : 1 }}" width="20"></th>
-                                    <th rowspan="{{ Request::query('role') == 'member' && count($categories) > 0 ? 2 : 1 }}">Identitas</th>
-                                    <th rowspan="{{ Request::query('role') == 'member' && count($categories) > 0 ? 2 : 1 }}">Kantor, Jabatan</th>
+                                    <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="20"></th>
+                                    <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}">Identitas</th>
+                                    <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}">Kantor, Jabatan</th>
                                     @if(Request::query('role') == 'member')
-                                        <th rowspan="{{ count($categories) > 0 ? 2 : 1 }}" width="80">Tanggal Kontrak</th>
-                                        <th rowspan="{{ count($categories) > 0 ? 2 : 1 }}" width="80">Masa Kerja (Bulan)</th>
-                                        @if(count($categories) > 0)
-                                        <th colspan="{{ count($categories) }}">Rincian Gaji (Rp.)</th>
+                                        <th rowspan="{{ Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="80">Tanggal Kontrak</th>
+                                        <th rowspan="{{ Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="80">Masa Kerja (Bulan)</th>
+                                        @if(Request::query('office') != null && Request::query('position') != null)
+                                            @if(count($categories) > 0)
+                                            <th colspan="{{ count($categories) }}">Rincian Gaji (Rp.)</th>
+                                            @endif
+                                            <th rowspan="{{ count($categories) > 0 ? 2 : 1 }}" width="80">Total (Rp.)</th>
                                         @endif
-                                        <th rowspan="{{ count($categories) > 0 ? 2 : 1 }}" width="80">Total (Rp.)</th>
                                     @endif
-                                    <th rowspan="{{ Request::query('role') == 'member' && count($categories) > 0 ? 2 : 1 }}" width="40">Opsi</th>
+                                    <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="40">Opsi</th>
                                 </tr>
-                                @if(Request::query('role') == 'member' && count($categories) > 0)
+                                @if(Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0)
                                     <tr>
                                         @foreach($categories as $category)
                                         <th width="80">{{ $category->name }}</th>
@@ -98,12 +141,14 @@
                                                 @endif
                                             </td>
                                             <td align="right">{{ $user->end_date == null ? number_format($user->period,1,'.',',') : '' }}</td>
-                                            @if(count($user->salaries) > 0)
-                                                @foreach($user->salaries as $salary)
-                                                <td align="right">{{ number_format($salary,0,',',',') }}</td>
-                                                @endforeach
+                                            @if(Request::query('office') != null && Request::query('position') != null)
+                                                @if(count($user->salaries) > 0)
+                                                    @foreach($user->salaries as $salary)
+                                                    <td align="right">{{ number_format($salary,0,',',',') }}</td>
+                                                    @endforeach
+                                                @endif
+                                                <td align="right">{{ number_format(array_sum($user->salaries),0,',',',') }}</td>
                                             @endif
-                                            <td align="right">{{ number_format(array_sum($user->salaries),0,',',',') }}</td>
                                         @endif
                                         <td align="center">
                                             <div class="btn-group">
@@ -155,13 +200,44 @@
 		}
 	});
 
-    // Change the Office
-    $(document).on("change", "#office", function() {
-        var office = $(this).val();
-        if(office == '')
-            window.location.href = "{{ route('admin.user.index', ['role' => $_GET['role']]) }}";
+    // Change Group
+    $(document).on("change", "#group", function() {
+        var group = $(this).val();
+        $.ajax({
+            type: "get",
+            url: "{{ route('api.office.index') }}",
+            data: {group: group},
+            success: function(result){
+                var html = '<option value="" disabled selected>--Pilih Kantor--</option>';
+                $(result).each(function(key,value){
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#office").html(html);
+            }
+        });
+        $.ajax({
+            type: 'get',
+            url: "{{ route('api.position.index') }}",
+            data: {group: group},
+            success: function(result){
+                var html = '<option value="" disabled selected>--Pilih Jabatan--</option>';
+                $(result).each(function(key,value){
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#position").html(html);
+            }
+        });
+        $("#form-filter").find("button[type=submit]").attr("disabled","disabled");
+    });
+
+    // Change the Office and Position
+    $(document).on("change", "#office, #position", function() {
+        var office = $("#office").val();
+        var position = $("#position").val();
+        if(office !== null && position !== null)
+            $("#form-filter").find("button[type=submit]").removeAttr("disabled");
         else
-            window.location.href = "{{ route('admin.user.index', ['role' => $_GET['role']]) }}" + "&office=" + office;
+            $("#form-filter").find("button[type=submit]").attr("disabled","disabled");
     });
 </script>
 

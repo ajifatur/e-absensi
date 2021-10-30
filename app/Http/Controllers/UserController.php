@@ -47,7 +47,7 @@ class UserController extends Controller
             elseif($request->query('role') == 'manager')
                 $users = User::where('role','=',role('manager'))->get();
             elseif($request->query('role') == 'member')
-                $users = User::where('role','=',role('member'))->get();
+                $users = $request->query('group') != null && $request->query('office') != null && $request->query('position') != null ? User::where('role','=',role('member'))->where('group_id','=',$request->query('group'))->where('office_id','=',$request->query('office'))->where('position_id','=',$request->query('position'))->where('end_date','=',null)->get() : User::where('role','=',role('member'))->where('end_date','=',null)->get();
             else
                 return redirect()->route('admin.user.index', ['role' => 'member']);
         }
@@ -57,7 +57,7 @@ class UserController extends Controller
             elseif($request->query('role') == 'manager')
                 $users = User::where('role','=',role('manager'))->where('group_id','=',Auth::user()->group_id)->get();
             elseif($request->query('role') == 'member')
-                $users = $request->query('office') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->where('end_date','=',null)->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('end_date','=',null)->get();
+                $users = $request->query('office') != null && $request->query('position') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->where('position_id','=',$request->query('position'))->where('end_date','=',null)->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('end_date','=',null)->get();
             else
                 return redirect()->route('admin.user.index', ['role' => 'member']);
         }
@@ -65,22 +65,23 @@ class UserController extends Controller
             if($request->query('role') == 'admin' || $request->query('role') == 'manager')
                 abort(403);
             elseif($request->query('role') == 'member')
-                $users = $request->query('office') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->where('end_date','=',null)->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('end_date','=',null)->get();
+                $users = $request->query('office') != null && $request->query('position') != null ? User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('office_id','=',$request->query('office'))->where('position_id','=',$request->query('position'))->where('end_date','=',null)->get() : User::where('role','=',role('member'))->where('group_id','=',Auth::user()->group_id)->where('end_date','=',null)->get();
             else
                 return redirect()->route('admin.user.index', ['role' => 'member']);
         }
 
-        // Get offices
-        if(Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
-            $offices = Office::where('group_id','=',Auth::user()->group_id)->get();
-        else
-            $offices = [];
+        // Get groups
+        $groups = Group::all();
+
+        // Set categories
+        $categories = [];
 
         // Set the users prop
         if(count($users) > 0 && $request->query('role') == 'member') {
             foreach($users as $key=>$user) {
                 // Set categories
                 $categories = SalaryCategory::where('group_id','=',$user->group_id)->where('position_id','=',$user->position_id)->get();
+                $users[$key]->categories = $categories;
 
                 // Set the period by month
                 $users[$key]->period = abs(Date::diff($user->start_date, date('Y-m').'-24')['days']) / 30;
@@ -104,8 +105,8 @@ class UserController extends Controller
         // View
         return view('admin/user/index', [
             'users' => $users,
-            'offices' => $offices,
-            'categories' => $request->query('role') == 'member' ? $categories : [],
+            'groups' => $groups,
+            'categories' => $categories,
         ]);
     }
 
