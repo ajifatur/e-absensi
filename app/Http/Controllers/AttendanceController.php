@@ -104,8 +104,18 @@ class AttendanceController extends Controller
             // Set attendances
             if(count($users) > 0) {
                 foreach($users as $key=>$user) {
-                    $attendance = Attendance::where('user_id','=',$user->id)->where('date','>=',$dt1)->where('date','<=',$dt2)->count();
-                    $users[$key]->attendance = $attendance;
+                    // Get attendances
+                    $attendances = Attendance::where('user_id','=',$user->id)->where('date','>=',$dt1)->where('date','<=',$dt2)->get();
+
+                    // Count late
+                    $late = 0;
+                    foreach($attendances as $attendance) {
+                        if(strtotime($attendance->entry_at) >= strtotime(date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at) + 60) $late++;
+                    }
+
+                    // Set
+                    $users[$key]->present = $attendances->count();
+                    $users[$key]->late = $late;
                 }
             }
 

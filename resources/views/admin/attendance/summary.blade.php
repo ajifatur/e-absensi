@@ -59,8 +59,11 @@
                         <thead>
                             <tr>
                                 <th width="20"></th>
-                                <th>Identitas User</th>
+                                <th>Karyawan</th>
+                                <th width="150">Kantor</th>
+                                <th width="150">Jabatan</th>
                                 <th width="80">Hadir</th>
+                                <th width="80">Terlambat</th>
                                 <th width="20">Opsi</th>
                             </tr>
                         </thead>
@@ -70,12 +73,19 @@
                                     <td align="center"><input type="checkbox"></td>
                                     <td>
                                         <a href="{{ route('admin.user.detail', ['id' => $user->id]) }}">{{ $user->name }}</a>
-                                        <br>
-                                        <small class="text-dark">{{ $user->group->name }}</small>
-                                        <br>
-                                        <small class="text-muted">{{ $user->office->name }}</small>
                                     </td>
-                                    <td align="right">{{ number_format($user->attendance,0,',',',') }}</td>
+                                    <td>
+                                        @if($user->office)
+                                            <a href="{{ route('admin.office.detail', ['id' => $user->office->id]) }}">{{ $user->office->name }}</a>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($user->position)
+                                            <a href="{{ route('admin.position.detail', ['id' => $user->position->id]) }}">{{ $user->position->name }}</a>
+                                        @endif
+                                    </td>
+                                    <td align="right">{{ number_format($user->present,0,',',',') }}</td>
+                                    <td align="right">{{ number_format($user->late,0,',',',') }}</td>
                                     <td>-</td>
                                 </tr>
                             @endforeach

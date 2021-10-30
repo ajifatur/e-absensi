@@ -58,7 +58,7 @@
                                         </td>
                                         <td>
                                             @if($work_hour->position)
-                                                <a href="{{ route('admin.office.detail', ['id' => $work_hour->position->id]) }}">{{ $work_hour->position->name }}</a>
+                                                <a href="{{ route('admin.position.detail', ['id' => $work_hour->position->id]) }}">{{ $work_hour->position->name }}</a>
                                             @endif
                                         </td>
                                         <td align="right">{{ number_format($work_hour->quota,0,',',',') }}</td>
