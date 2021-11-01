@@ -27,16 +27,21 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{{ route('member.dashboard') }}">E-Absensi</a>
-            <a class="btn btn-warning" href="javascript:void(0)" onclick="event.preventDefault(); document.getElementById('form-logout').submit();">
-                <i class="bi-power"></i> Log Out
-            </a>
+            <div class="btn-group">
+                <a class="btn btn-info" href="{{ route('member.attendance.detail', ['id' => null]) }}">
+                    <i class="bi-list"></i> Rekap Absensi
+                </a>
+                <a class="btn btn-warning" href="javascript:void(0)" onclick="event.preventDefault(); document.getElementById('form-logout').submit();">
+                    <i class="bi-power"></i> Log Out
+                </a>
+            </div>
             <form class="d-none" id="form-logout" method="post" action="{{ route('member.logout') }}">
                 @csrf
             </form>
         </div>
     </nav>
 
-    @if(Auth::user()->status == 1)
+    @if(Auth::user()->end_date == null)
     <div class="container mt-5">
         <!-- Welcome Text -->
         <div class="alert alert-info text-center" role="alert">

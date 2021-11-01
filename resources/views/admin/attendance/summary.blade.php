@@ -90,7 +90,11 @@
                                     </td>
                                     <td align="right">{{ number_format($user->present,0,',',',') }}</td>
                                     <td align="right">{{ number_format($user->late,0,',',',') }}</td>
-                                    <td>-</td>
+                                    <td align="center">
+                                        <div class="btn-group">
+                                            <a href="{{ route('admin.attendance.detail', ['id' => $user->id]) }}" class="btn btn-info btn-sm" title="Detail"><i class="fa fa-list"></i></a>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

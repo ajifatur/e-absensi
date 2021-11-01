@@ -227,6 +227,50 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function detail($id = null)
+    {
+        // Set default date
+        $dt1 = date('m') > 1 ? date('Y-m-d', strtotime(date('Y').'-'.(date('m')-1).'-24')) : date('Y-m-d', strtotime((date('Y')-1).'-12-24'));
+        $dt2 = date('Y-m-d', strtotime(date('Y').'-'.date('m').'-23'));
+
+        if(Auth::user()->role != role('member')) {
+            // Get the user
+            $user = User::findOrFail($id);
+
+            // Get attendances
+            $attendances = Attendance::where('user_id','=',$user->id)->whereDate('date','>=',$dt1)->whereDate('date','<=',$dt2)->orderBy('date','asc')->get();
+
+            // View
+            return view('admin/attendance/detail', [
+                'user' => $user,
+                'attendances' => $attendances,
+                'dt1' => $dt1,
+                'dt2' => $dt2,
+            ]);
+        }
+        else {
+            // Get the user
+            $user = User::findOrFail(Auth::user()->id);
+
+            // Get attendances
+            $attendances = Attendance::where('user_id','=',$user->id)->whereDate('date','>=',$dt1)->whereDate('date','<=',$dt2)->orderBy('date','asc')->get();
+
+            // View
+            return view('member/attendance/detail', [
+                'user' => $user,
+                'attendances' => $attendances,
+                'dt1' => $dt1,
+                'dt2' => $dt2,
+            ]);
+        }
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id

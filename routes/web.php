@@ -26,6 +26,7 @@ Route::group(['middleware' => ['admin']], function(){
 	Route::get('/admin/attendance/summary', 'AttendanceController@summary')->name('admin.attendance.summary');
 	Route::get('/admin/attendance/create', 'AttendanceController@create')->name('admin.attendance.create');
 	Route::post('/admin/attendance/store', 'AttendanceController@store')->name('admin.attendance.store');
+	Route::get('/admin/attendance/detail/{id}', 'AttendanceController@detail')->name('admin.attendance.detail');
 	Route::get('/admin/attendance/edit/{id}', 'AttendanceController@edit')->name('admin.attendance.edit');
 	Route::post('/admin/attendance/update', 'AttendanceController@update')->name('admin.attendance.update');
 	Route::post('/admin/attendance/delete', 'AttendanceController@delete')->name('admin.attendance.delete');
@@ -104,6 +105,7 @@ Route::group(['middleware' => ['member']], function(){
     Route::get('/member', 'DashboardController@index')->name('member.dashboard');
 
 	// Attendance
+	Route::get('/member/attendance/detail', 'AttendanceController@detail')->name('member.attendance.detail');
 	Route::post('/member/attendance/entry', 'AttendanceController@entry')->name('member.attendance.entry');
 	Route::post('/member/attendance/exit', 'AttendanceController@exit')->name('member.attendance.exit');
 });
