@@ -49,10 +49,14 @@ class DashboardController extends Controller
                                 $end_date = date('Y-m-d', strtotime("+1 day"));
                             }
                             // If the user login at 1 hour after work time
-                            elseif(date('G', strtotime($entry_at)) <= (date('G', strtotime($work_hour->end_at)) + 1)) {
+                            elseif(date('G', strtotime($entry_at)) < (date('G', strtotime($work_hour->end_at)) + 1)) {
                                 $start_date = date('Y-m-d', strtotime("-1 day"));
                                 $end_date = date('Y-m-d', strtotime($entry_at));
                             }
+							else {
+								$start_date = date('Y-m-d', strtotime($entry_at));
+								$end_date = date('Y-m-d', strtotime($entry_at));
+							}
                         }
 
                         // Set start time and end time
