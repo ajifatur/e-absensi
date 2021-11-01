@@ -64,15 +64,16 @@
                                         {{ date('d/m/Y', strtotime($attendance->date)) }}
                                     </td>
                                     <td>
+                                        @php $date = $attendance->start_at <= $attendance->end_at ? $attendance->date : date('Y-m-d', strtotime('-1 day', strtotime($attendance->date))); @endphp
                                         <i class="bi-clock me-2"></i>{{ date('H:i', strtotime($attendance->entry_at)) }} WIB
                                         <br>
                                         <small class="text-muted"><i class="bi-calendar me-2"></i>{{ date('d/m/Y', strtotime($attendance->entry_at)) }}</small>
-                                        @if(strtotime($attendance->entry_at) < strtotime(date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at) + 60)
+                                        @if(strtotime($attendance->entry_at) < strtotime($date.' '.$attendance->start_at) + 60)
                                             <br>
                                             <span class="text-success"><i class="bi-check-square me-2"></i>Masuk sesuai dengan waktunya.</span>
                                         @else
                                             <br>
-                                            <span class="text-danger"><i class="bi-exclamation-triangle me-2"></i>Terlambat {{ time_to_string(abs(strtotime(date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at) - strtotime($attendance->entry_at))) }}.</span>
+                                            <span class="text-danger"><i class="bi-exclamation-triangle me-2"></i>Terlambat {{ time_to_string(abs(strtotime($date.' '.$attendance->start_at) - strtotime($attendance->entry_at))) }}.</span>
                                         @endif
                                     </td>
                                     <td>

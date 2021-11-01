@@ -69,18 +69,19 @@
                                             <span class="d-none">{{ date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at }}</span>
                                             {{ date('d/m/Y', strtotime($attendance->date)) }}
                                         </td>
-                                        <td>
-                                            <i class="fa fa-clock-o mr-2"></i>{{ date('H:i', strtotime($attendance->entry_at)) }} WIB
-                                            <br>
-                                            <small class="text-muted"><i class="fa fa-calendar mr-2"></i>{{ date('d/m/Y', strtotime($attendance->entry_at)) }}</small>
-                                            @if(strtotime($attendance->entry_at) < strtotime(date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at) + 60)
-                                                <br>
-                                                <strong class="text-success"><i class="fa fa-check-square-o mr-2"></i>Masuk sesuai dengan waktunya.</strong>
-                                            @else
-                                                <br>
-                                                <strong class="text-danger"><i class="fa fa-warning mr-2"></i>Terlambat {{ time_to_string(abs(strtotime(date('Y-m-d', strtotime($attendance->entry_at)).' '.$attendance->start_at) - strtotime($attendance->entry_at))) }}.</strong>
-                                            @endif
-                                        </td>
+										<td>
+											@php $date = $attendance->start_at <= $attendance->end_at ? $attendance->date : date('Y-m-d', strtotime('-1 day', strtotime($attendance->date))); @endphp
+											<i class="fa fa-clock-o mr-2"></i>{{ date('H:i', strtotime($attendance->entry_at)) }} WIB
+											<br>
+											<small class="text-muted"><i class="fa fa-calendar mr-2"></i>{{ date('d/m/Y', strtotime($attendance->entry_at)) }}</small>
+											@if(strtotime($attendance->entry_at) < strtotime($date.' '.$attendance->start_at) + 60)
+												<br>
+												<strong class="text-success"><i class="fa fa-check-square-o mr-2"></i>Masuk sesuai dengan waktunya.</strong>
+											@else
+												<br>
+												<strong class="text-danger"><i class="fa fa-warning mr-2"></i>Terlambat {{ time_to_string(abs(strtotime($date.' '.$attendance->start_at) - strtotime($attendance->entry_at))) }}.</strong>
+											@endif
+										</td>
                                         <td>
                                             @if($attendance->exit_at != null)
                                                 <i class="fa fa-clock-o mr-2"></i>{{ date('H:i', strtotime($attendance->exit_at)) }} WIB
