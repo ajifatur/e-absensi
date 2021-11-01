@@ -90,6 +90,7 @@
                                     @if(Request::query('role') == 'member')
                                         <th rowspan="{{ Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="80">Tanggal Kontrak</th>
                                         <th rowspan="{{ Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="80">Masa Kerja (Bulan)</th>
+                                        <th rowspan="{{ Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="80">Kehadiran per Bulan</th>
                                         @if(Request::query('office') != null && Request::query('position') != null)
                                             @if(count($categories) > 0)
                                             <th colspan="{{ count($categories) }}">Rincian Gaji (Rp.)</th>
@@ -119,7 +120,7 @@
                                             <small class="text-muted">{{ $user->phone_number }}</small>
                                         </td>
                                         <td>
-                                        @if(Auth::user()->role == role('super-admin') && $user->role == role('super-admin'))
+                                        @if($user->role == role('super-admin'))
                                             SUPER ADMIN
                                         @else
                                             {{ in_array($user->role, [role('admin'), role('manager')]) ? strtoupper(role($user->role)) : $user->office->name }}
@@ -141,6 +142,7 @@
                                                 @endif
                                             </td>
                                             <td align="right">{{ $user->end_date == null ? number_format($user->period,1,'.',',') : '' }}</td>
+                                            <td align="right">{{ $user->end_date == null ? number_format($user->attendances,0,'.',',') : '' }}</td>
                                             @if(Request::query('office') != null && Request::query('position') != null)
                                                 @if(count($user->salaries) > 0)
                                                     @foreach($user->salaries as $salary)

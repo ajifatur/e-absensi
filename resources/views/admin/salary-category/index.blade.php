@@ -52,6 +52,7 @@
                                         <td>
                                             @if($category->type_id == 1) Manual
                                             @elseif($category->type_id == 2) Masa Kerja (Bulan)
+                                            @elseif($category->type_id == 3) Kehadiran per Bulan
                                             @endif
                                         </td>
                                         <td>{{ number_format($category->indicators()->count(),0,',',',') }}</td>

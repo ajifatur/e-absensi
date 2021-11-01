@@ -15,6 +15,7 @@ use App\Models\Group;
 use App\Models\Office;
 use App\Models\SalaryCategory;
 use App\Models\UserIndicator;
+use App\Models\Attendance;
 
 class UserController extends Controller
 {
@@ -78,6 +79,10 @@ class UserController extends Controller
 
         // Set the users prop
         if(count($users) > 0 && $request->query('role') == 'member') {
+            // Set default date
+            $dt1 = date('m') > 1 ? date('Y-m-d', strtotime(date('Y').'-'.(date('m')-1).'-24')) : date('Y-m-d', strtotime((date('Y')-1).'-12-24'));
+            $dt2 = date('Y-m-d', strtotime(date('Y').'-'.date('m').'-23'));
+			
             foreach($users as $key=>$user) {
                 // Set categories
                 $categories = SalaryCategory::where('group_id','=',$user->group_id)->where('position_id','=',$user->position_id)->get();
@@ -85,6 +90,9 @@ class UserController extends Controller
 
                 // Set the period by month
                 $users[$key]->period = abs(Date::diff($user->start_date, date('Y-m').'-24')['days']) / 30;
+				
+                // Set the attendance by month
+                $users[$key]->attendances = Attendance::where('user_id','=',$user->id)->where('date','>=',$dt1)->where('date','<=',$dt2)->count();
 
                 // Set salaries
                 $salaries = [];
@@ -98,6 +106,9 @@ class UserController extends Controller
                     // By period per month
                     elseif($category->type_id == 2)
                         array_push($salaries, Salary::getAmountByRange($users[$key]->period, $user->group_id, $category->id));
+                    // By attendance per month
+                    elseif($category->type_id == 3)
+                        array_push($salaries, Salary::getAmountByRange($users[$key]->attendances, $user->group_id, $category->id) * $users[$key]->attendances);
                 }
 
                 $users[$key]->salaries = $salaries;

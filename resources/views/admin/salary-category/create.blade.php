@@ -87,6 +87,7 @@
                                     <option value="" selected>--Pilih--</option>
                                     <option value="1" {{ old('type_id') == 1 ? 'selected' : '' }}>Manual</option>
                                     <option value="2" {{ old('type_id') == 2 ? 'selected' : '' }}>Masa Kerja (Bulan)</option>
+                                    <option value="2" {{ old('type_id') == 3 ? 'selected' : '' }}>Kehadiran per Bulan</option>
                                 </select>
                                 @if($errors->has('type_id'))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('type_id')) }}</div>
