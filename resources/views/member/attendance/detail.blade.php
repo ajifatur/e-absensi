@@ -19,8 +19,8 @@
         <div class="container">
             <a class="navbar-brand" href="{{ route('member.dashboard') }}">E-Absensi</a>
             <div class="btn-group">
-                <a class="btn btn-info" href="{{ route('member.attendance.detail', ['id' => null]) }}">
-                    <i class="bi-list"></i> Rekap Absensi
+                <a class="btn btn-info" href="{{ route('member.dashboard') }}">
+                    <i class="bi-arrow-left"></i> Kembali
                 </a>
                 <a class="btn btn-warning" href="javascript:void(0)" onclick="event.preventDefault(); document.getElementById('form-logout').submit();">
                     <i class="bi-power"></i> Log Out
