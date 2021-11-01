@@ -130,7 +130,8 @@
                                         <tr>
                                             <th width="20"><input type="checkbox"></th>
                                             <th>Identitas</th>
-                                            <th>Kantor, Jabatan</th>
+                                            <th width="150">Kantor</th>
+                                            <th width="150">Jabatan</th>
                                             <th width="40">Opsi</th>
                                         </tr>
                                     </thead>
@@ -146,13 +147,14 @@
                                                     <small class="text-muted">{{ $user->phone_number }}</small>
                                                 </td>
                                                 <td>
-                                                @if(Auth::user()->role == role('super-admin') && $user->role == role('super-admin'))
-                                                    SUPER ADMIN
-                                                @else
-                                                    {{ $user->role == role('admin') && $user->office_id == 0 ? 'ADMIN' : $user->office->name }}
-                                                    <br>
-                                                    <small class="text-muted">{{ $user->position ? $user->position->name : '' }}</small>
-                                                @endif
+                                                    @if($user->office)
+                                                        <a href="{{ route('admin.office.detail', ['id' => $user->office->id]) }}">{{ $user->office->name }}</a>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($user->position)
+                                                        <a href="{{ route('admin.position.detail', ['id' => $user->position->id]) }}">{{ $user->position->name }}</a>
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <div class="btn-group">

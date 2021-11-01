@@ -49,8 +49,9 @@
                                         <td align="right">{{ number_format($office->users()->where('role','=',role('member'))->where('end_date','=',null)->count(),0,',',',') }}</td>
                                         <td>
                                             @if($office->group)
-                                                <a href="{{ route('admin.group.detail', ['id' => $office->group->id]) }}">{{ $office->group->name }}</a></td>
+                                                <a href="{{ route('admin.group.detail', ['id' => $office->group->id]) }}">{{ $office->group->name }}</a>
                                             @endif
+                                        </td>
                                         <td>
                                             <div class="btn-group">
                                                 <a href="{{ $office->name != 'Head Office' ? route('admin.office.edit', ['id' => $office->id]) : '#' }}" class="btn btn-warning btn-sm" style="{{ $office->name != 'Head Office' ? '' : 'cursor: not-allowed' }}" title="{{ $office->name != 'Head Office' ? 'Edit' : 'Tidak diizinikan mengedit data ini' }}"><i class="fa fa-edit"></i></a>

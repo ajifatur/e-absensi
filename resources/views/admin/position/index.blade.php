@@ -50,8 +50,6 @@
                                         <td>
                                             @if($position->group)
                                                 <a href="{{ route('admin.group.detail', ['id' => $position->group->id]) }}">{{ $position->group->name }}</a>
-                                            @else
-                                                -
                                             @endif
                                         </td>
                                         <td>
