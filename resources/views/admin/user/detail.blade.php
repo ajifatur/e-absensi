@@ -8,7 +8,6 @@
     <div class="app-title">
         <div>
             <h1><i class="fa fa-user"></i> Detail User</h1>
-            <p>Menu untuk menampilkan detail user</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -18,101 +17,81 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-8">
             <div class="tile">
-                <div class="tile-title-w-btn">
-                    <h3 class="title">Detail User</h3>
-                    <a class="btn btn-primary" href="{{ route('admin.user.edit', ['id' => $user->id]) }}"><i class="fa fa-lg fa-edit mr-2"></i>Edit User</a>
-                </div>
                 <div class="tile-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Nama:</label>
-                                <br>
-                                {{ $user->name }}
-                            </div>
-                            <div class="form-group">
-                                <label>Tanggal Lahir:</label>
-                                <br>
-                                {{ date('d/m/Y', strtotime($user->birthdate)) }}
-                            </div>
-                            <div class="form-group">
-                                <label>Jenis Kelamin:</label>
-                                <br>
-                                {{ $user->gender == 'L' ? 'Laki-Laki' : 'Perempuan' }}
-                            </div>
-                            <div class="form-group">
-                                <label>Nomor HP:</label>
-                                <br>
-                                {{ $user->phone_number }}
-                            </div>
-                            <div class="form-group">
-                                <label>Alamat:</label>
-                                <br>
-                                {{ $user->address != '' ? $user->address : '-' }}
-                            </div>
-                            <div class="form-group">
-                                <label>Pendidikan Terakhir:</label>
-                                <br>
-                                {{ $user->latest_education != '' ? $user->latest_education : '-' }}
-                            </div>
-                            <div class="form-group">
-                                <label>Mulai Bekerja:</label>
-                                <br>
-                                {{ date('d/m/Y', strtotime($user->start_date)) }}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Email:</label>
-                                <br>
-                                {{ $user->email }}
-                            </div>
-                            <div class="form-group">
-                                <label>Username:</label>
-                                <br>
-                                {{ $user->username }}
-                            </div>
-                            <div class="form-group">
-                                <label>Status:</label>
-                                <br>
-                                {{ $user->status == 1 ? 'Aktif' : 'Tidak Aktif' }}
-                            </div>
-                            <div class="form-group">
-                                <label>Waktu Mendaftar:</label>
-                                <br>
-                                {{ date('d/m/Y H:i', strtotime($user->created_at)) }}
-                            </div>
-                            <div class="form-group">
-                                <label>Kunjungan Terakhir:</label>
-                                <br>
-                                {{ date('d/m/Y H:i', strtotime($user->last_visit)) }}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Role:</label>
-                                <br>
-                                {{ role($user->role) }}
-                            </div>
-                            <div class="form-group">
-                                <label>Grup:</label>
-                                <br>
-                                {{ $user->group ? $user->group->name : '-' }}
-                            </div>
-                            <div class="form-group">
-                                <label>Kantor:</label>
-                                <br>
-                                {{ $user->office ? $user->office->name : '-' }}
-                            </div>
-                            <div class="form-group">
-                                <label>Jabatan:</label>
-                                <br>
-                                {{ $user->position ? $user->position->name : '-' }}
-                            </div>
-                        </div>
-                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Nama:</span>
+                            <span>{{ $user->name }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Tanggal lahir:</span>
+                            <span>{{ date('d/m/Y', strtotime($user->birthdate)) }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Jenis Kelamin:</span>
+                            <span>{{ $user->gender == 'L' ? 'Laki-Laki' : 'Perempuan' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Nomor HP:</span>
+                            <span>{{ $user->phone_number }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Alamat:</span>
+                            <span>{{ $user->address != '' ? $user->address : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Pendidikan Terakhir:</span>
+                            <span>{{ $user->latest_education != '' ? $user->latest_education : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Email:</span>
+                            <span>{{ $user->email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Username:</span>
+                            <span>{{ $user->username }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mt-3 mt-lg-0">
+            <div class="tile">
+                <div class="tile-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Role:</span>
+                            <span>{{ role($user->role) }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Grup:</span>
+                            <span>{{ $user->group ? $user->group->name : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Kantor:</span>
+                            <span>{{ $user->office ? $user->office->name : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Jabatan:</span>
+                            <span>{{ $user->position ? $user->position->name : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Status:</span>
+                            <span class="badge {{ $user->end_date == null ? 'badge-success' : 'badge-danger' }}">{{ $user->end_date == null ? 'Aktif' : 'Tidak Aktif' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Mulai Bekerja:</span>
+                            <span>{{ date('d/m/Y', strtotime($user->start_date)) }}</span>
+                        </li>
+                        @if($user->end_date != null)
+                        <li class="list-group-item d-flex justify-content-between p-1">
+                            <span class="font-weight-bold">Akhir Bekerja:</span>
+                            <span>{{ date('d/m/Y', strtotime($user->end_date)) }}</span>
+                        </li>
+                        @endif
+                    </ul>
                 </div>
             </div>
         </div>
