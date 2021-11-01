@@ -89,12 +89,14 @@ class UserController extends Controller
                 // Set salaries
                 $salaries = [];
                 foreach($categories as $category) {
+                    // By manual
                     if($category->type_id == 1) {
                         $check = $user->indicators()->where('category_id','=',$category->id)->first();
                         $value = $check ? $check->value : 0;
                         array_push($salaries, Salary::getAmountByRange($value, $user->group_id, $category->id));
                     }
-                    if($category->type_id == 2)
+                    // By period per month
+                    elseif($category->type_id == 2)
                         array_push($salaries, Salary::getAmountByRange($users[$key]->period, $user->group_id, $category->id));
                 }
 
@@ -245,8 +247,8 @@ class UserController extends Controller
         // Validation
         $validator = Validator::make($request->all(), [
             'role' => Auth::user()->role == role('manager') ? '' : 'required',
-            'office_id' => $request->role != role('admin') ? 'required' : '',
-            'position_id' => $request->role != role('admin') ? 'required' : '',
+            'office_id' => !in_array($request->role, [role('admin'), role('manager')]) ? 'required' : '',
+            'position_id' => !in_array($request->role, [role('admin'), role('manager')]) ? 'required' : '',
             'name' => 'required|max:200',
             'birthdate' => 'required',
             'gender' => 'required',
@@ -306,7 +308,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         // Get categories
-        $categories = SalaryCategory::where('group_id','=',$user->group_id)->where('type_id','=',1)->get();
+        $categories = SalaryCategory::where('group_id','=',$user->group_id)->where('position_id','=',$user->position_id)->where('type_id','=',1)->get();
 
         // View
         return view('admin/user/edit-indicator', [

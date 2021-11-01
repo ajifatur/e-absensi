@@ -28,7 +28,7 @@
                         <div class="row">
                             @foreach($categories as $category)
                             <div class="form-group col-md-12">
-                                <label>{{ filter_string($category->name, ['Gaji ', 'Insentif ']) }} <span class="text-danger">*</span></label>
+                                <label>{{ $category->name }} <span class="text-danger">*</span></label>
                                 <input type="text" name="value[{{ $category->id }}]" class="form-control {{ $errors->has('value.'.$category->id) ? 'is-invalid' : '' }}" value="{{ in_array($category->id, $user->indicators()->pluck('category_id')->toArray()) ? $user->indicators()->where('category_id','=',$category->id)->first()->value('value') : '' }}">
                                 @if($errors->has('value.'.$category->id))
                                 <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('value.'.$category->id)) }}</div>

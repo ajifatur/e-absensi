@@ -5,7 +5,7 @@ namespace Ajifatur\Helpers;
 use App\Models\SalaryCategory;
 
 /**
- * @method static int getAmountByRange(string|int $value, int $group_id, string $category)
+ * @method static int getAmountByRange(string|int $value, int $group_id, int $category)
  */
 class Salary
 {
