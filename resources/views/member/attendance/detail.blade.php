@@ -37,6 +37,7 @@
         <div class="card">
             <div class="card-header">Rekap Absensi</div>
             <div class="card-body">
+                <h6 class="mb-3">Absensi periode {{ date('d/m/Y', strtotime($dt1)) }} sampai {{ date('d/m/Y', strtotime($dt2)) }}:</h6>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover table-bordered" id="table">
                         <thead>
