@@ -87,7 +87,7 @@
                                     <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="20"></th>
                                     <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}">Identitas</th>
                                     @if(Request::query('office') == null && Request::query('position') == null)
-                                    <th rowspan="{{ Request::query('role') == 'member' && count($categories) > 0 ? 2 : 1 }}">Kantor, Jabatan</th>
+                                    <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}">Kantor, Jabatan</th>
                                     @endif
                                     @if(Request::query('role') == 'member')
                                         <th rowspan="{{ Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="80">Tanggal Kontrak</th>
