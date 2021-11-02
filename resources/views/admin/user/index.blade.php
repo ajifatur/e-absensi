@@ -86,7 +86,9 @@
                                 <tr>
                                     <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="20"></th>
                                     <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}">Identitas</th>
-                                    <th rowspan="{{ Request::query('role') == 'member' && Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}">Kantor, Jabatan</th>
+                                    @if(Request::query('office') == null && Request::query('position') == null)
+                                    <th rowspan="{{ Request::query('role') == 'member' && count($categories) > 0 ? 2 : 1 }}">Kantor, Jabatan</th>
+                                    @endif
                                     @if(Request::query('role') == 'member')
                                         <th rowspan="{{ Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="80">Tanggal Kontrak</th>
                                         <th rowspan="{{ Request::query('office') != null && Request::query('position') != null && count($categories) > 0 ? 2 : 1 }}" width="80">Masa Kerja (Bulan)</th>
@@ -119,19 +121,21 @@
                                             <br>
                                             <small class="text-muted">{{ $user->phone_number }}</small>
                                         </td>
+                                        @if(Request::query('office') == null && Request::query('position') == null)
                                         <td>
-                                        @if($user->role == role('super-admin'))
-                                            SUPER ADMIN
-                                        @else
-                                            {{ in_array($user->role, [role('admin'), role('manager')]) ? strtoupper(role($user->role)) : $user->office->name }}
-                                            <br>
-                                            @if(Auth::user()->role == role('super-admin'))
-                                            <small><a href="{{ route('admin.group.detail', ['id' => $user->group->id]) }}">{{ $user->group->name }}</a></small>
-                                            <br>
+                                            @if($user->role == role('super-admin'))
+                                                SUPER ADMIN
+                                            @else
+                                                {{ in_array($user->role, [role('admin'), role('manager')]) ? strtoupper(role($user->role)) : $user->office->name }}
+                                                <br>
+                                                @if(Auth::user()->role == role('super-admin'))
+                                                <small><a href="{{ route('admin.group.detail', ['id' => $user->group->id]) }}">{{ $user->group->name }}</a></small>
+                                                <br>
+                                                @endif
+                                                <small class="text-muted">{{ $user->position ? $user->position->name : '' }}</small>
                                             @endif
-                                            <small class="text-muted">{{ $user->position ? $user->position->name : '' }}</small>
-                                        @endif
                                         </td>
+                                        @endif
                                         @if(Request::query('role') == 'member')
                                             <td>
                                                 <span class="d-none">{{ $user->end_date == null ? 1 : 0 }} {{ $user->start_date }}</span>
