@@ -389,20 +389,25 @@ class AttendanceController extends Controller
                 $date = date('Y-m-d', strtotime($entry_at));
             }
         }
+		
+		// Check absence
+		$check = Attendance::where('user_id','=',Auth::user()->id)->where('workhour_id','=',$request->id)->where('office_id','=',Auth::user()->office_id)->where('date','=',$date)->whereTime('entry_at','>=',date('H:i', strtotime($entry_at)).":00")->whereTime('entry_at','<=',date('H:i', strtotime($entry_at)).":59")->first();
 
         // Entry absence
-        $attendance = new Attendance;
-        $attendance->user_id = Auth::user()->id;
-        $attendance->workhour_id = $request->id;
-        $attendance->office_id = Auth::user()->office_id;
-		$attendance->start_at = $work_hour->start_at;
-		$attendance->end_at = $work_hour->end_at;
-        $attendance->date = $date;
-        $attendance->entry_at = $entry_at;
-        $attendance->exit_at = null;
-        $attendance->entry_status = 0;
-        $attendance->exit_status = 0;
-        $attendance->save();
+		if(!$check) {
+			$attendance = new Attendance;
+			$attendance->user_id = Auth::user()->id;
+			$attendance->workhour_id = $request->id;
+			$attendance->office_id = Auth::user()->office_id;
+			$attendance->start_at = $work_hour->start_at;
+			$attendance->end_at = $work_hour->end_at;
+			$attendance->date = $date;
+			$attendance->entry_at = $entry_at;
+			$attendance->exit_at = null;
+			$attendance->entry_status = 0;
+			$attendance->exit_status = 0;
+			$attendance->save();
+		}
 
         // Redirect
         return redirect()->route('member.dashboard')->with(['message' => 'Berhasil melakukan absensi masuk.']);
