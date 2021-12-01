@@ -66,6 +66,8 @@
                                 <th width="150">Jabatan</th>
                                 <th width="80">Hadir</th>
                                 <th width="80">Terlambat</th>
+                                <th width="80">Sakit</th>
+                                <th width="80">Izin</th>
                                 <th width="20">Opsi</th>
                             </tr>
                         </thead>
@@ -90,6 +92,8 @@
                                     </td>
                                     <td align="right">{{ number_format($user->present,0,',',',') }}</td>
                                     <td align="right">{{ number_format($user->late,0,',',',') }}</td>
+                                    <td align="right">{{ number_format($user->absent1,0,',',',') }}</td>
+                                    <td align="right">{{ number_format($user->absent2,0,',',',') }}</td>
                                     <td align="center">
                                         <div class="btn-group">
                                             <a href="{{ route('admin.attendance.detail', ['id' => $user->id]) }}" class="btn btn-info btn-sm" title="Detail"><i class="fa fa-list"></i></a>

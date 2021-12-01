@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Ajifatur\Helpers\Date;
 use App\Models\Attendance;
+use App\Models\Absent;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\WorkHour;
@@ -105,7 +106,7 @@ class AttendanceController extends Controller
             if(count($users) > 0) {
                 foreach($users as $key=>$user) {
                     // Get attendances
-                    $attendances = Attendance::where('user_id','=',$user->id)->where('date','>=',$dt1)->where('date','<=',$dt2)->get();
+                    $attendances = Attendance::where('user_id','=',$user->id)->where('date','>=',$t1)->where('date','<=',$t2)->get();
 
                     // Count late
                     $late = 0;
@@ -117,6 +118,8 @@ class AttendanceController extends Controller
                     // Set
                     $users[$key]->present = $attendances->count();
                     $users[$key]->late = $late;
+                    $users[$key]->absent1 = Absent::where('user_id','=',$user->id)->where('category_id','=',1)->where('date','>=',$t1)->where('date','<=',$t2)->count();
+                    $users[$key]->absent2 = Absent::where('user_id','=',$user->id)->where('category_id','=',2)->where('date','>=',$t1)->where('date','<=',$t2)->count();
                 }
             }
 
@@ -152,7 +155,7 @@ class AttendanceController extends Controller
             if(count($users) > 0) {
                 foreach($users as $key=>$user) {
                     // Get attendances
-                    $attendances = Attendance::where('user_id','=',$user->id)->where('date','>=',$dt1)->where('date','<=',$dt2)->get();
+                    $attendances = Attendance::where('user_id','=',$user->id)->where('date','>=',$t1)->where('date','<=',$t2)->get();
 
                     // Count late
                     $late = 0;
@@ -164,6 +167,8 @@ class AttendanceController extends Controller
                     // Set
                     $users[$key]->present = $attendances->count();
                     $users[$key]->late = $late;
+                    $users[$key]->absent1 = Absent::where('user_id','=',$user->id)->where('category_id','=',1)->where('date','>=',$t1)->where('date','<=',$t2)->count();
+                    $users[$key]->absent2 = Absent::where('user_id','=',$user->id)->where('category_id','=',2)->where('date','>=',$t1)->where('date','<=',$t2)->count();
                 }
             }
 
@@ -240,7 +245,7 @@ class AttendanceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int|null  $id
      * @return \Illuminate\Http\Response
      */
     public function detail($id = null)
