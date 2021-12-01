@@ -64,10 +64,10 @@
                                 <th width="150">Kantor</th>
                                 @endif
                                 <th width="150">Jabatan</th>
-                                <th width="80">Hadir</th>
-                                <th width="80">Terlambat</th>
-                                <th width="80">Sakit</th>
-                                <th width="80">Izin</th>
+                                <th width="60">Hadir</th>
+                                <th width="60">Terlambat</th>
+                                <th width="60">Sakit</th>
+                                <th width="60">Izin</th>
                                 <th width="20">Opsi</th>
                             </tr>
                         </thead>
@@ -90,13 +90,21 @@
                                             <a href="{{ route('admin.position.detail', ['id' => $user->position->id]) }}">{{ $user->position->name }}</a>
                                         @endif
                                     </td>
-                                    <td align="right">{{ number_format($user->present,0,',',',') }}</td>
-                                    <td align="right">{{ number_format($user->late,0,',',',') }}</td>
-                                    <td align="right">{{ number_format($user->absent1,0,',',',') }}</td>
-                                    <td align="right">{{ number_format($user->absent2,0,',',',') }}</td>
+                                    <td align="right">
+                                        <a href="{{ route('admin.attendance.detail', ['id' => $user->id, 'category' => 1, 't1' => date('d/m/Y', strtotime($t1)), 't2' => date('d/m/Y', strtotime($t2))]) }}">{{ number_format($user->present,0,',',',') }}</a>
+                                    </td>
+                                    <td align="right">
+                                        <a href="{{ route('admin.attendance.detail', ['id' => $user->id, 'category' => 2, 't1' => date('d/m/Y', strtotime($t1)), 't2' => date('d/m/Y', strtotime($t2))]) }}">{{ number_format($user->late,0,',',',') }}</a>
+                                    </td>
+                                    <td align="right">
+                                        <a href="{{ route('admin.attendance.detail', ['id' => $user->id, 'category' => 3, 't1' => date('d/m/Y', strtotime($t1)), 't2' => date('d/m/Y', strtotime($t2))]) }}">{{ number_format($user->absent1,0,',',',') }}</a>
+                                    </td>
+                                    <td align="right">
+                                        <a href="{{ route('admin.attendance.detail', ['id' => $user->id, 'category' => 4, 't1' => date('d/m/Y', strtotime($t1)), 't2' => date('d/m/Y', strtotime($t2))]) }}">{{ number_format($user->absent2,0,',',',') }}</a>
+                                    </td>
                                     <td align="center">
                                         <div class="btn-group">
-                                            <a href="{{ route('admin.attendance.detail', ['id' => $user->id]) }}" class="btn btn-info btn-sm" title="Detail"><i class="fa fa-list"></i></a>
+                                            <a href="{{ route('admin.attendance.detail', ['id' => $user->id, 'category' => 1, 't1' => date('d/m/Y', strtotime($t1)), 't2' => date('d/m/Y', strtotime($t2))]) }}" class="btn btn-info btn-sm" title="Detail"><i class="fa fa-list"></i></a>
                                         </div>
                                     </td>
                                 </tr>

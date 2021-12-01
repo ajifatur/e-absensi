@@ -245,28 +245,60 @@ class AttendanceController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int|null  $id
      * @return \Illuminate\Http\Response
      */
-    public function detail($id = null)
+    public function detail(Request $request, $id = null)
     {
         // Set default date
         $dt1 = date('m') > 1 ? date('Y-m-d', strtotime(date('Y').'-'.(date('m')-1).'-24')) : date('Y-m-d', strtotime((date('Y')-1).'-12-24'));
         $dt2 = date('Y-m-d', strtotime(date('Y').'-'.date('m').'-23'));
+
+        // Set params
+        $category = $request->query('category') != null ? $request->query('category') : 1;
+        $t1 = $request->query('t1') != null ? Date::change($request->query('t1')) : $dt1;
+        $t2 = $request->query('t2') != null ? Date::change($request->query('t2')) : $dt2;
 
         if(Auth::user()->role != role('member')) {
             // Get the user
             $user = User::findOrFail($id);
 
             // Get attendances
-            $attendances = Attendance::where('user_id','=',$user->id)->whereDate('date','>=',$dt1)->whereDate('date','<=',$dt2)->orderBy('date','asc')->get();
+            $attendances = Attendance::where('user_id','=',$user->id)->whereDate('date','>=',$t1)->whereDate('date','<=',$t2)->orderBy('date','desc')->get();
+
+            // Count attendances
+            $count[1] = $attendances->count();
+
+            // Get late attendances
+            $late = 0;
+            foreach($attendances as $key=>$attendance) {
+                $date = $attendance->start_at <= $attendance->end_at ? $attendance->date : date('Y-m-d', strtotime('-1 day', strtotime($attendance->date)));
+                if(strtotime($attendance->entry_at) >= strtotime($date.' '.$attendance->start_at) + 60) $late++;
+                if($category == 2) if(strtotime($attendance->entry_at) < strtotime($date.' '.$attendance->start_at) + 60) $attendances->forget($key);
+            }
+
+            // Count late attendances
+            $count[2] = $late;
+
+            // Get absents
+            $absents1 = Absent::where('user_id','=',$user->id)->where('category_id','=',1)->where('date','>=',$t1)->where('date','<=',$t2)->orderBy('date','desc')->get();
+            $absents2 = Absent::where('user_id','=',$user->id)->where('category_id','=',2)->where('date','>=',$t1)->where('date','<=',$t2)->orderBy('date','desc')->get();
+            if($category == 3) $attendances = $absents1;
+            if($category == 4) $attendances = $absents2;
+
+            // Count absents
+            $count[3] = count($absents1);
+            $count[4] = count($absents2);
 
             // View
             return view('admin/attendance/detail', [
                 'user' => $user,
                 'attendances' => $attendances,
-                'dt1' => $dt1,
-                'dt2' => $dt2,
+                'category' => $category,
+                't1' => $t1,
+                't2' => $t2,
+                'count' => $count
             ]);
         }
         else {
@@ -274,14 +306,14 @@ class AttendanceController extends Controller
             $user = User::findOrFail(Auth::user()->id);
 
             // Get attendances
-            $attendances = Attendance::where('user_id','=',$user->id)->whereDate('date','>=',$dt1)->whereDate('date','<=',$dt2)->orderBy('date','asc')->get();
+            $attendances = Attendance::where('user_id','=',$user->id)->whereDate('date','>=',$t1)->whereDate('date','<=',$t2)->orderBy('date','desc')->get();
 
             // View
             return view('member/attendance/detail', [
                 'user' => $user,
                 'attendances' => $attendances,
-                'dt1' => $dt1,
-                'dt2' => $dt2,
+                't1' => $t1,
+                't2' => $t2,
             ]);
         }
     }
