@@ -136,7 +136,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-3 col-lg-2 col-form-label">Jam Keluar</label>
+                            <label class="col-md-3 col-lg-2 col-form-label">Waktu Keluar</label>
                             <div class="col-md-9 col-lg-10">
                                 <div class="form-row">
                                     <div class="col-lg-5">
@@ -153,6 +153,16 @@
                                     </div>
                                 </div>
                                 <div class="text-muted">Kosongi saja jika belum melakukan absen keluar.</div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-lg-2 col-form-label">Alasan Terlambat</label>
+                            <div class="col-md-9 col-lg-4">
+                                <input type="text" name="late" class="form-control {{ $errors->has('late') ? 'is-invalid' : '' }}" value="{{ old('late') }}">
+                                <div class="text-muted">Kosongi saja jika tidak terlambat.</div>
+                                @if($errors->has('late'))
+                                <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('late')) }}</div>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -24,7 +24,7 @@ class Attendance extends Model
      *
      * @throws \Illuminate\Database\Eloquent\MassAssignmentException
      */
-    protected $fillable = ['start_at', 'end_at', 'date', 'entry_at', 'exit_at'];
+    protected $fillable = ['start_at', 'end_at', 'date', 'entry_at', 'exit_at', 'late'];
     
     /**
      * Get the user that owns the attendance.

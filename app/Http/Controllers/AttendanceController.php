@@ -211,11 +211,11 @@ class AttendanceController extends Controller
         ]);
         
         // Check errors
-        if($validator->fails()){
+        if($validator->fails()) {
             // Back to form page with validation error messages
             return redirect()->back()->withErrors($validator->errors())->withInput();
         }
-        else{
+        else {
             // Get the work hour
             $work_hour = WorkHour::find($request->workhour_id);
 
@@ -229,8 +229,7 @@ class AttendanceController extends Controller
             $attendance->date = Date::change($request->date);
             $attendance->entry_at = Date::change($request->entry_at[0]).' '.$request->entry_at[1].':00';
             $attendance->exit_at = $request->exit_at[0] && $request->exit_at[1] != '' ? Date::change($request->exit_at[0]).' '.$request->exit_at[1].':00' : null;
-            $attendance->entry_status = 0;
-            $attendance->exit_status = 0;
+            $attendance->late = $request->late;
             $attendance->save();
 
             // Redirect
@@ -335,6 +334,7 @@ class AttendanceController extends Controller
             $attendance->date = Date::change($request->date);
             $attendance->entry_at = Date::change($request->entry_at[0]).' '.$request->entry_at[1].':00';
             $attendance->exit_at = $request->exit_at[0] && $request->exit_at[1] != '' ? Date::change($request->exit_at[0]).' '.$request->exit_at[1].':00' : null;
+            $attendance->late = $request->late;
             $attendance->save();
 
             // Redirect
@@ -404,8 +404,7 @@ class AttendanceController extends Controller
 			$attendance->date = $date;
 			$attendance->entry_at = $entry_at;
 			$attendance->exit_at = null;
-			$attendance->entry_status = 0;
-			$attendance->exit_status = 0;
+            $attendance->late = '';
 			$attendance->save();
 		}
 

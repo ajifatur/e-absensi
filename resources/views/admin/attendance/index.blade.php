@@ -110,6 +110,10 @@
                                             <br>
                                             <strong class="text-danger"><i class="fa fa-warning mr-2"></i>Terlambat {{ time_to_string(abs(strtotime($date.' '.$attendance->start_at) - strtotime($attendance->entry_at))) }}.</strong>
                                         @endif
+                                        @if($attendance->late != '')
+                                        <br>
+                                        <strong class="text-danger"><i class="fa fa-pencil mr-2"></i>Terlambat karena {{ $attendance->late }}.</strong>
+                                        @endif
                                     </td>
                                     <td>
                                         @if($attendance->exit_at != null)
