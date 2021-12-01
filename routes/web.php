@@ -114,6 +114,15 @@ Route::group(['middleware' => ['member']], function(){
 Route::group(['middleware' => ['guest']], function(){
     // Home
     Route::get('/', function () {
+		// $routes = collect(Route::getRoutes())->map(function($route) {
+		// 	return $route->uri();
+		// });
+
+		// echo "<pre>";
+		// var_dump($routes);
+		// echo "</pre>";
+		// return;
+
         return redirect()->route('auth.login');
     });
 
