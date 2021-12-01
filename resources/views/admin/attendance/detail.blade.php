@@ -120,6 +120,11 @@
     </div>
 </main>
 
+<form id="form-delete" class="d-none" method="post" action="{{ route('admin.attendance.delete') }}">
+    @csrf
+    <input type="hidden" name="id">
+</form>
+
 @endsection
 
 @section('js')
@@ -130,6 +135,17 @@
 <script type="text/javascript">
 	// DataTable
 	DataTable("#table");
+
+    // Button Delete
+    $(document).on("click", ".btn-delete", function(e){
+        e.preventDefault();
+        var id = $(this).data("id");
+        var ask = confirm("Anda yakin ingin menghapus data ini?");
+        if(ask){
+            $("#form-delete input[name=id]").val(id);
+            $("#form-delete").submit();
+        }
+    });
 </script>
 
 @endsection
