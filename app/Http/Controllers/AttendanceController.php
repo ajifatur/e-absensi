@@ -83,102 +83,77 @@ class AttendanceController extends Controller
      */
     public function summary(Request $request)
     {
-        if(Auth::user()->role == role('super-admin')){
-            // Set default date
-            $dt1 = date('m') > 1 ? date('Y-m-d', strtotime(date('Y').'-'.(date('m')-1).'-24')) : date('Y-m-d', strtotime((date('Y')-1).'-12-24'));
-            $dt2 = date('Y-m-d', strtotime(date('Y').'-'.date('m').'-23'));
+        // Set params
+        $dt1 = date('m') > 1 ? date('Y-m-d', strtotime(date('Y').'-'.(date('m')-1).'-24')) : date('Y-m-d', strtotime((date('Y')-1).'-12-24'));
+        $dt2 = date('Y-m-d', strtotime(date('Y').'-'.date('m').'-23'));
+        $t1 = $request->query('t1') != null ? Date::change($request->query('t1')) : $dt1;
+        $t2 = $request->query('t2') != null ? Date::change($request->query('t2')) : $dt2;
 
+        if(Auth::user()->role == role('super-admin')){
             // Set params
             $group = $request->query('group') != null ? $request->query('group') : 0;
             $office = $request->query('office') != null ? $request->query('office') : 0;
-            $t1 = $request->query('t1') != null ? Date::change($request->query('t1')) : $dt1;
-            $t2 = $request->query('t2') != null ? Date::change($request->query('t2')) : $dt2;
 
-            // Get attendances
+            // Get users
             if($group != 0 && $office != 0)
                 $users = User::where('role','=',role('member'))->where('end_date','=',null)->where('group_id','=',$group)->where('office_id','=',$office)->get();
             elseif($group != 0 && $office == 0)
                 $users = User::where('role','=',role('member'))->where('end_date','=',null)->where('group_id','=',$group)->get();
             else
                 $users = User::where('role','=',role('member'))->where('end_date','=',null)->get();
-
-            // Set attendances
-            if(count($users) > 0) {
-                foreach($users as $key=>$user) {
-                    // Get attendances
-                    $attendances = Attendance::where('user_id','=',$user->id)->where('date','>=',$t1)->where('date','<=',$t2)->get();
-
-                    // Count late
-                    $late = 0;
-                    foreach($attendances as $attendance) {
-                        $date = $attendance->start_at <= $attendance->end_at ? $attendance->date : date('Y-m-d', strtotime('-1 day', strtotime($attendance->date)));
-                        if(strtotime($attendance->entry_at) >= strtotime($date.' '.$attendance->start_at) + 60) $late++;
-                    }
-
-                    // Set
-                    $users[$key]->present = $attendances->count();
-                    $users[$key]->late = $late;
-                    $users[$key]->absent1 = Absent::where('user_id','=',$user->id)->where('category_id','=',1)->where('date','>=',$t1)->where('date','<=',$t2)->count();
-                    $users[$key]->absent2 = Absent::where('user_id','=',$user->id)->where('category_id','=',2)->where('date','>=',$t1)->where('date','<=',$t2)->count();
-                }
-            }
-
-            // Get groups
-            $groups = Group::all();
-
-            // View
-            return view('admin/attendance/summary', [
-                'groups' => $groups,
-                'users' => $users,
-                't1' => $t1,
-                't2' => $t2,
-            ]);
         }
         elseif(Auth::user()->role == role('admin') || Auth::user()->role == role('manager')) {
-            // Set default date
-            $dt1 = date('m') > 1 ? date('Y-m-d', strtotime(date('Y').'-'.(date('m')-1).'-24')) : date('Y-m-d', strtotime((date('Y')-1).'-12-24'));
-            $dt2 = date('Y-m-d', strtotime(date('Y').'-'.date('m').'-23'));
-
             // Set params
             $group = Auth::user()->group_id;
             $office = $request->query('office') != null ? $request->query('office') : 0;
-            $t1 = $request->query('t1') != null ? Date::change($request->query('t1')) : $dt1;
-            $t2 = $request->query('t2') != null ? Date::change($request->query('t2')) : $dt2;
 
             // Get users
             if($office != 0)
                 $users = User::where('role','=',role('member'))->where('end_date','=',null)->where('group_id','=',$group)->where('office_id','=',$office)->get();
             else
                 $users = User::where('role','=',role('member'))->where('end_date','=',null)->where('group_id','=',$group)->get();
+        }
 
-            // Set attendances
-            if(count($users) > 0) {
-                foreach($users as $key=>$user) {
-                    // Get attendances
-                    $attendances = Attendance::where('user_id','=',$user->id)->where('date','>=',$t1)->where('date','<=',$t2)->get();
+        // Set users attendances and absents
+        if(count($users) > 0) {
+            foreach($users as $key=>$user) {
+                // Set absents
+                $users[$key]->absent1 = Absent::where('user_id','=',$user->id)->where('category_id','=',1)->where('date','>=',$t1)->where('date','<=',$t2)->count();
+                $users[$key]->absent2 = Absent::where('user_id','=',$user->id)->where('category_id','=',2)->where('date','>=',$t1)->where('date','<=',$t2)->count();
 
-                    // Count late
-                    $late = 0;
-                    foreach($attendances as $attendance) {
-                        $date = $attendance->start_at <= $attendance->end_at ? $attendance->date : date('Y-m-d', strtotime('-1 day', strtotime($attendance->date)));
-                        if(strtotime($attendance->entry_at) >= strtotime($date.' '.$attendance->start_at) + 60) $late++;
+                // Get the work hours
+                $users[$key]->workhours = WorkHour::where('group_id','=',$user->group_id)->where('office_id','=',$user->office_id)->where('position_id','=',$user->position_id)->orderBy('name','asc')->get();
+
+                if(count($users[$key]->workhours) > 0) {
+                    foreach($users[$key]->workhours as $key2=>$workhour) {
+                        // Get attendances
+                        $attendances = Attendance::where('user_id','=',$user->id)->where('workhour_id','=',$workhour->id)->where('date','>=',$t1)->where('date','<=',$t2)->get();
+
+                        // Count late
+                        $late = 0;
+                        foreach($attendances as $attendance) {
+                            $date = $attendance->start_at <= $attendance->end_at ? $attendance->date : date('Y-m-d', strtotime('-1 day', strtotime($attendance->date)));
+                            if(strtotime($attendance->entry_at) >= strtotime($date.' '.$attendance->start_at) + 60) $late++;
+                        }
+
+                        // Set
+                        $users[$key]->workhours[$key2]->present = $attendances->count();
+                        $users[$key]->workhours[$key2]->late = $late;
                     }
-
-                    // Set
-                    $users[$key]->present = $attendances->count();
-                    $users[$key]->late = $late;
-                    $users[$key]->absent1 = Absent::where('user_id','=',$user->id)->where('category_id','=',1)->where('date','>=',$t1)->where('date','<=',$t2)->count();
-                    $users[$key]->absent2 = Absent::where('user_id','=',$user->id)->where('category_id','=',2)->where('date','>=',$t1)->where('date','<=',$t2)->count();
                 }
             }
-
-            // View
-            return view('admin/attendance/summary', [
-                'users' => $users,
-                't1' => $t1,
-                't2' => $t2,
-            ]);
         }
+
+        // Get groups
+        $groups = Group::all();
+
+        // View
+        return view('admin/attendance/summary', [
+            'groups' => $groups,
+            'users' => $users,
+            't1' => $t1,
+            't2' => $t2,
+        ]);
     }
 
     /**
@@ -257,6 +232,7 @@ class AttendanceController extends Controller
 
         // Set params
         $category = $request->query('category') != null ? $request->query('category') : 1;
+        $workhour = $request->query('workhour') != null ? $request->query('workhour') : 0;
         $t1 = $request->query('t1') != null ? Date::change($request->query('t1')) : $dt1;
         $t2 = $request->query('t2') != null ? Date::change($request->query('t2')) : $dt2;
 
@@ -264,8 +240,14 @@ class AttendanceController extends Controller
             // Get the user
             $user = User::findOrFail($id);
 
+            // Get the work hours
+            $workhours = WorkHour::where('group_id','=',$user->group_id)->where('office_id','=',$user->office_id)->where('position_id','=',$user->position_id)->orderBy('name','asc')->get();
+
             // Get attendances
-            $attendances = Attendance::where('user_id','=',$user->id)->whereDate('date','>=',$t1)->whereDate('date','<=',$t2)->orderBy('date','desc')->get();
+            if($workhour == 0)
+                $attendances = Attendance::where('user_id','=',$user->id)->whereDate('date','>=',$t1)->whereDate('date','<=',$t2)->orderBy('date','desc')->get();
+            else
+                $attendances = Attendance::where('user_id','=',$user->id)->where('workhour_id','=',$workhour)->whereDate('date','>=',$t1)->whereDate('date','<=',$t2)->orderBy('date','desc')->get();
 
             // Count attendances
             $count[1] = $attendances->count();
@@ -294,6 +276,7 @@ class AttendanceController extends Controller
             // View
             return view('admin/attendance/detail', [
                 'user' => $user,
+                'workhours' => $workhours,
                 'attendances' => $attendances,
                 'category' => $category,
                 't1' => $t1,

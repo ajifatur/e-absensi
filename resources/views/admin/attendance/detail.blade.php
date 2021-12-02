@@ -20,6 +20,12 @@
             <div class="tile">
                 <div class="tile-body">
                     <form id="form-tanggal" class="form-inline" method="get" action="">
+                        <select name="workhour" id="workhour" class="form-control form-control-sm mb-2 mr-sm-2">
+                            <option value="0">Semua Jam Kerja</option>
+                            @foreach($workhours as $workhour)
+                            <option value="{{ $workhour->id }}" {{ Request::query('workhour') == $workhour->id ? 'selected' : '' }}>{{ $workhour->name }}</option>
+                            @endforeach
+                        </select>
                         <input type="hidden" name="category" value="{{ $category }}">
                         <input type="text" id="t1" name="t1" class="form-control form-control-sm mb-2 mr-sm-2 input-tanggal" value="{{ isset($_GET) && isset($_GET['t1']) ? $_GET['t1'] : date('d/m/Y') }}" placeholder="Dari Tanggal" title="Dari Tanggal">
                         <input type="text" id="t2" name="t2" class="form-control form-control-sm mb-2 mr-sm-2 input-tanggal" value="{{ isset($_GET) && isset($_GET['t2']) ? $_GET['t2'] : date('d/m/Y') }}" placeholder="Sampai Tanggal" title="Sampai Tanggal">
