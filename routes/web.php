@@ -31,6 +31,14 @@ Route::group(['middleware' => ['admin']], function(){
 	Route::post('/admin/attendance/update', 'AttendanceController@update')->name('admin.attendance.update');
 	Route::post('/admin/attendance/delete', 'AttendanceController@delete')->name('admin.attendance.delete');
 
+    // Absent
+	Route::get('/admin/absent', 'AbsentController@index')->name('admin.absent.index');
+	Route::get('/admin/absent/create', 'AbsentController@create')->name('admin.absent.create');
+	Route::post('/admin/absent/store', 'AbsentController@store')->name('admin.absent.store');
+	Route::get('/admin/absent/edit/{id}', 'AbsentController@edit')->name('admin.absent.edit');
+	Route::post('/admin/absent/update', 'AbsentController@update')->name('admin.absent.update');
+	Route::post('/admin/absent/delete', 'AbsentController@delete')->name('admin.absent.delete');
+
 	// User
 	Route::get('/admin/user', 'UserController@index')->name('admin.user.index');
 	Route::get('/admin/user/create', 'UserController@create')->name('admin.user.create');

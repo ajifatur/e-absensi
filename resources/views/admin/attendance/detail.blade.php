@@ -163,10 +163,10 @@
                                                 </td>
                                                 <td>{!! nl2br($attendance->note) !!}</td>
                                                 <td>
-                                                    <!-- <div class="btn-group">
-                                                        <a href="{{ route('admin.attendance.edit', ['id' => $attendance->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
-                                                        <a href="#" class="btn btn-danger btn-sm btn-delete" data-id="{{ $attendance->id }}" title="Hapus"><i class="fa fa-trash"></i></a>
-                                                    </div> -->
+                                                    <div class="btn-group">
+                                                        <a href="{{ route('admin.absent.edit', ['id' => $attendance->id]) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
+                                                        <a href="#" class="btn btn-danger btn-sm btn-delete-absent" data-id="{{ $attendance->id }}" title="Hapus"><i class="fa fa-trash"></i></a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -183,6 +183,11 @@
 </main>
 
 <form id="form-delete" class="d-none" method="post" action="{{ route('admin.attendance.delete') }}">
+    @csrf
+    <input type="hidden" name="id">
+</form>
+
+<form id="form-delete-absent" class="d-none" method="post" action="{{ route('admin.absent.delete') }}">
     @csrf
     <input type="hidden" name="id">
 </form>
@@ -213,6 +218,17 @@
         if(ask){
             $("#form-delete input[name=id]").val(id);
             $("#form-delete").submit();
+        }
+    });
+
+    // Button Delete Absent
+    $(document).on("click", ".btn-delete-absent", function(e){
+        e.preventDefault();
+        var id = $(this).data("id");
+        var ask = confirm("Anda yakin ingin menghapus data ini?");
+        if(ask){
+            $("#form-delete-absent input[name=id]").val(id);
+            $("#form-delete-absent").submit();
         }
     });
 

@@ -21,7 +21,8 @@
 		@if(Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
 		<li class="app-menu__submenu"><span class="app-menu__label">Report</span></li>
 		<li><a class="app-menu__item {{ is_int(strpos(Request::url(), route('admin.attendance.index'))) && !is_int(strpos(Request::url(), route('admin.attendance.summary'))) ? 'active' : '' }}" href="{{ route('admin.attendance.index') }}"><i class="app-menu__icon fa fa-clipboard"></i><span class="app-menu__label">Absensi</span></a></li>
-		<li><a class="app-menu__item {{ is_int(strpos(Request::url(), route('admin.attendance.summary'))) ? 'active' : '' }}" href="{{ route('admin.attendance.summary') }}"><i class="app-menu__icon fa fa-clipboard"></i><span class="app-menu__label">Rekap Absensi</span></a></li>
+		<li><a class="app-menu__item {{ is_int(strpos(Request::url(), route('admin.absent.index'))) ? 'active' : '' }}" href="{{ route('admin.absent.index') }}"><i class="app-menu__icon fa fa-clipboard"></i><span class="app-menu__label">Ketidakhadiran</span></a></li>
+		<li><a class="app-menu__item {{ is_int(strpos(Request::url(), route('admin.attendance.summary'))) ? 'active' : '' }}" href="{{ route('admin.attendance.summary') }}"><i class="app-menu__icon fa fa-clipboard"></i><span class="app-menu__label">Rekapitulasi Absensi</span></a></li>
 		@endif
 		@if(Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin') || Auth::user()->role == role('manager'))
 		<li class="app-menu__submenu"><span class="app-menu__label">Master</span></li>
