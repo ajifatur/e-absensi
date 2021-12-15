@@ -39,7 +39,8 @@ class LoginController extends Controller
         // Set credentials
         $credentials = [
 			$loginType => $request->username,
-			'password' => $request->password
+			'password' => $request->password,
+            'role' => role('member')
 		];
 
         if(Auth::attempt($credentials)) {
