@@ -23,6 +23,7 @@
             "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "Semua"]],
             "pageLength": 25,
             "rowsGroup": rowsGroup,
+            "orderCellsTop": true,
             columnDefs: [
                 {orderable: false, targets: 0},
                 {orderable: false, targets: -1},
