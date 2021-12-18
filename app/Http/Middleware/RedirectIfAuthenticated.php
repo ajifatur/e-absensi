@@ -23,9 +23,9 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                if(Auth::user()->role == role('super-admin') || Auth::user()->role == role('admin'))
+                if(Auth::user()->role_id == role('super-admin') || Auth::user()->role_id == role('admin'))
                     return redirect()->route('admin.dashboard');
-                elseif(Auth::user()->role == role('member'))
+                elseif(Auth::user()->role_id == role('member'))
                     return redirect()->route('member.dashboard');
             }
         }
