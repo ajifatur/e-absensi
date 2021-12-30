@@ -60,6 +60,7 @@ class AttendanceController extends Controller
 			$attendance->entry_at = $entry_at;
 			$attendance->exit_at = null;
             $attendance->late = '';
+            $attendance->ip_address = $request->ip();
 			$attendance->save();
 		}
 
