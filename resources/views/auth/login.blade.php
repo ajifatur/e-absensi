@@ -2,7 +2,7 @@
 <html>
     <head>
         @include('template/_head')
-        <title>Login | {{ setting('name') }}</title>
+        <title>Login | E-Absensi</title>
         <style>
             .btn .fa {margin-right: 0;}
         </style>
@@ -13,7 +13,7 @@
         </section>
         <section class="login-content">
             <div class="logo">
-                <img src="{{ asset('assets/images/logo/'.setting('logo')) }}" height="150">
+                <img src="https://campus.co.id/wp-content/uploads/2019/10/campus_light.png" height="75" style="filter: brightness(0) invert(1);">
             </div>
             <div class="login-box">
                 <form class="login-form" action="{{ route('auth.post-login') }}" method="post">
