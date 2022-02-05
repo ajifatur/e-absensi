@@ -23,8 +23,8 @@
                     <div class="alert alert-danger text-center">{{ $errors->first('message') }}</div>
                     @endif
                     <div class="form-group">
-                        <label class="control-label">EMAIL / USERNAME</label>
-                        <input class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" name="username" type="text" placeholder="Masukkan Email / Username" value="{{ old('username') }}" autofocus>
+                        <label class="control-label">USERNAME</label>
+                        <input class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" name="username" type="text" placeholder="Masukkan Username" value="{{ old('username') }}" autofocus>
                         @if($errors->has('username'))
                         <div class="form-control-feedback text-danger">{{ ucfirst($errors->first('username')) }}</div>
                         @endif
