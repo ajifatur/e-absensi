@@ -19,7 +19,7 @@
         .card-absensi-masuk:hover .card, .card-absensi-keluar:hover .card, .card-absensi-penuh:hover .card {background-color: #eeeeee;}
     </style>
 
-    <title>Absensi Member | {{ setting('name') }}</title>
+    <title>Absensi Member | E-Absensi</title>
 </head>
 <body>
 
@@ -42,7 +42,7 @@
     <div class="container mt-5">
         <!-- Welcome Text -->
         <div class="alert alert-info text-center" role="alert">
-            Selamat datang <strong>{{ Auth::user()->name }}</strong> di {{ setting('name') }}. Anda login sebagai Member <strong>({{ Auth::user()->position ? Auth::user()->position->name : '-' }})</strong>.
+            Selamat datang <strong>{{ Auth::user()->name }}</strong> di E-Absensi. Anda login sebagai Member <strong>({{ Auth::user()->position ? Auth::user()->position->name : '-' }})</strong>.
         </div>
 
         <!-- Digital Clock -->
