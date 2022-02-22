@@ -14,7 +14,7 @@ class UserIndicator extends Model
      *
      * @var string
      */
-    protected $table = 'user__indicators';
+    protected $table = 'user_indicators';
 
     /**
      * Fill the model with an array of attributes.

@@ -14,7 +14,7 @@ class WorkHour extends Model
      *
      * @var string
      */
-    protected $table = 'work__hours';
+    protected $table = 'work_hours';
 
     /**
      * The attributes that are mass assignable.

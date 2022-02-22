@@ -14,7 +14,7 @@ class UserDebtFund extends Model
      *
      * @var string
      */
-    protected $table = 'user__debt__funds';
+    protected $table = 'user_debt_funds';
 
     /**
      * Fill the model with an array of attributes.

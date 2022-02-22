@@ -14,7 +14,7 @@ class SalaryIndicator extends Model
      *
      * @var string
      */
-    protected $table = 'salary__indicators';
+    protected $table = 'salary_indicators';
 
     /**
      * Fill the model with an array of attributes.

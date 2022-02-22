@@ -14,7 +14,7 @@ class UserLateFund extends Model
      *
      * @var string
      */
-    protected $table = 'user__late__funds';
+    protected $table = 'user_late_funds';
 
     /**
      * Fill the model with an array of attributes.
